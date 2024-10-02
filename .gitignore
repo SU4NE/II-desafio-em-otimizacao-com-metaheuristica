@@ -8,7 +8,7 @@
 *.sqlite3
 *.pkl
 *.h5 
-*.so 
+*.so
 
 # Ignore Python-related files
 *.pyc
