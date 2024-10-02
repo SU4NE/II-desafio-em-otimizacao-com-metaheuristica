@@ -21,4 +21,4 @@ jobs:
 
     - name: Run pylint
       run: |
-        pylint --rcfile=config/make/.pylintrc --recursive=y BinPackSolver
+        pylint --rcfile=config/lint/.pylintrc --recursive=y BinPackSolver
