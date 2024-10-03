@@ -1,8 +1,9 @@
 include .env
-.PHONY:pylint activeblack format check
+.PHONY: pylint activeblack format check
 
 #* Git Rules
-CPP_SCR_FORMAT = $(shell dir /B /S $(SRC)\*.cpp | findstr "$(SRC)")
+isort:
+	isort --settings-path=$(MAKE_CONFIG_FILE) $(FORMAT_CHECK_SRC)
 
 pylint:
 	pylint --rcfile=$(PYLINT_CONFIG_FILE)  --recursive=y  $(FORMAT_CHECK_SRC)
@@ -10,7 +11,7 @@ pylint:
 activeblack:
 	black $(FORMAT_CHECK_SRC)
 
-format: activeblack
+format: activeblack isort
 
 check: pylint 
 
