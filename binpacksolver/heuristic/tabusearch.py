@@ -169,7 +169,7 @@ def tabu_search(
     c: int,
     time_max: float = 60,
     max_it: int = None,
-    alpha: int = 4
+    alpha: int = 4,
 ):
     """_summary_
 

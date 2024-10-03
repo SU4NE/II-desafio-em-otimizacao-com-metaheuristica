@@ -17,7 +17,7 @@ def first_fit(items: np.ndarray, capacity: int) -> np.ndarray:
     for item in items:
         placed = False
 
-        for i in range(len(bins)):
+        for i, _ in enumerate(bins):
             if bins[i] >= item:
                 bins[i] -= item
                 placed = True
@@ -47,7 +47,7 @@ def first_fit_decreasing(items: np.ndarray, capacity: int) -> np.ndarray:
     for item in sorted_items:
         placed = False
 
-        for i in range(len(bins)):
+        for i, _ in enumerate(bins):
             if bins[i] >= item:
                 bins[i] -= item
                 placed = True
@@ -78,7 +78,7 @@ def best_fit_decreasing(items: np.ndarray, capacity: int) -> np.ndarray:
         best_fit_index = -1
         min_space_left = capacity + 1
 
-        for i in range(len(bins)):
+        for i, _ in enumerate(bins):
             space_left = bins[i]
             if item <= space_left and (space_left - item) < min_space_left:
                 best_fit_index = i
