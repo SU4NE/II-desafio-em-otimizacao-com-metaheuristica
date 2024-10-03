@@ -16,7 +16,6 @@ Key Features:
 from collections import deque
 from typing import Set, Tuple
 
-
 class TabuStructure:
     """Tabu structure to store a set of forbidden moves, with limited capacity."""
 
@@ -93,3 +92,5 @@ class TabuStructure:
             self.tabu.discard(element)
 
         return True
+
+
