@@ -10,10 +10,7 @@ pylint:
 activeblack:
 	black $(FORMAT_CHECK_SRC)
 
-cppformat:
-	clang-format -i $(CPP_SCR_FORMAT)
-
-format: activeblack cppformat
+format: activeblack
 
 check: pylint 
 
