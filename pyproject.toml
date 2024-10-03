@@ -1,7 +1,0 @@
-[project]
-name = "ii-desafio-em-otimizacao-com-metaheuristica"
-version = "0.1.0"
-description = "Add your description here"
-readme = "README.md"
-requires-python = ">=3.8"
-dependencies = []

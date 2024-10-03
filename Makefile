@@ -1,19 +1,13 @@
 include .env
-.PHONY:pylint activeblack format check
-
-#* Git Rules
-CPP_SCR_FORMAT = $(shell dir /B /S $(SRC)\*.cpp | findstr "$(SRC)")
+.PHONY: pylint activeblack format check
 
 pylint:
-	pylint --rcfile=$(PYLINT_CONFIG_FILE)  --recursive=y  $(FORMAT_CHECK_SRC)
+	pylint --rcfile=$(PYLINT_CONFIG_FILE) $(FORMAT_CHECK_SRC)
 
 activeblack:
 	black $(FORMAT_CHECK_SRC)
 
-cppformat:
-	clang-format -i $(CPP_SCR_FORMAT)
-
-format: activeblack cppformat
+format: activeblack
 
 check: pylint 
 

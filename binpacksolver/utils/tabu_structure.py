@@ -12,12 +12,14 @@ Key Features:
 - Supports the insertion of new elements, ensuring uniqueness.
 - Automatically manages the maximum size of the tabu list.
 """
+
 from collections import deque
 from typing import Tuple, Set
 
+
 class TabuStructure:
     """Tabu structure to store a set of forbidden moves, with limited capacity."""
-    
+
     def __init__(self, N: int):
         """
         Initializes the Tabu structure.
@@ -26,7 +28,7 @@ class TabuStructure:
         ----------
         N : int
             Maximum number of elements allowed in the tabu set.
-        """        
+        """
         self.N: int = N
         self.itens: deque = deque()
         self.tabu: Set[Tuple[int, int]] = set()
@@ -44,7 +46,7 @@ class TabuStructure:
         -------
         bool
             True if the element is in the tabu set, False otherwise.
-        """     
+        """
         return element in self.tabu
 
     def find(self, element: Tuple[int, int]) -> bool:
@@ -60,13 +62,13 @@ class TabuStructure:
         -------
         bool
             True if the element is found, False otherwise.
-        """        
+        """
         return self.__check(element)
 
     def insert(self, element: Tuple[int, int]) -> bool:
         """
         Inserts a new element into the tabu set. If the element already exists,
-        it returns False without modifying the set. If the set exceeds its 
+        it returns False without modifying the set. If the set exceeds its
         maximum size, the oldest element is removed.
 
         Parameters
@@ -77,17 +79,17 @@ class TabuStructure:
         Returns
         -------
         bool
-            True if the element was successfully inserted, False if it was 
+            True if the element was successfully inserted, False if it was
             already in the tabu set.
-        """   
+        """
         if self.__check(element):
             return False
 
         self.tabu.add(element)
         self.itens.append(element)
-        
+
         if len(self.tabu) > self.N:
             element = self.itens.popleft()
             self.tabu.discard(element)
-        
+
         return True

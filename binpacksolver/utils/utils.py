@@ -4,11 +4,21 @@ and operations. These functions can be used in different contexts
 to facilitate optimization processes, array manipulations, and 
 other generic operations.
 """
+
 import numpy as np
 
-def check_end(th_min: int, best_fit: int, time_max: float, time_start: float, time_end: float, max_it: int, it: int) -> bool:
+
+def check_end(
+    th_min: int,
+    best_fit: int,
+    time_max: float,
+    time_start: float,
+    time_end: float,
+    max_it: int,
+    it: int,
+) -> bool:
     """
-    Checks if the termination conditions for an optimization process 
+    Checks if the termination conditions for an optimization process
     are met.
 
     The function evaluates three conditions:
@@ -36,15 +46,15 @@ def check_end(th_min: int, best_fit: int, time_max: float, time_start: float, ti
     Returns
     -------
     bool
-        Returns True if the optimization process should continue, 
+        Returns True if the optimization process should continue,
         False if any termination condition is met.
     """
     if max_it and it > max_it:
         return False
-    
+
     if time_max and time_end - time_start >= time_max:
         return False
-    
+
     return best_fit > th_min
 
 
@@ -67,7 +77,7 @@ def merge_np(a: np.ndarray, b: np.ndarray) -> np.ndarray:
     -------
     np.ndarray
         A new sorted array containing all elements from both input arrays.
-    """    
+    """
     merged_sorted = np.empty(len(a) + len(b), dtype=a.dtype)
     i = 0
     j = 0
@@ -91,5 +101,5 @@ def merge_np(a: np.ndarray, b: np.ndarray) -> np.ndarray:
         merged_sorted[k] = b[j]
         j += 1
         k += 1
-    
+
     return merged_sorted

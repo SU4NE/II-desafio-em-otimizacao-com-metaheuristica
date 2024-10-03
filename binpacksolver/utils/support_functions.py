@@ -9,12 +9,15 @@ import numpy as np
 import math
 from typing import List, Tuple
 
-def generate_solution(solution: np.ndarray, C: int, **kwargs) -> Tuple[np.ndarray, List]:
+
+def generate_solution(
+    solution: np.ndarray, C: int, **kwargs
+) -> Tuple[np.ndarray, List]:
     """
     Generates a modified solution array based on the given parameters.
 
-    If the 'FFD', 'BFD', or 'FD' keyword argument is provided and set to True, 
-    the function can implement heuristics such as First-Fit Decreasing (FFD), 
+    If the 'FFD', 'BFD', or 'FD' keyword argument is provided and set to True,
+    the function can implement heuristics such as First-Fit Decreasing (FFD),
     Best-Fit Decreasing (BFD), or First-Fit (FD) to prioritize the best solutions.
 
     Parameters
@@ -33,21 +36,21 @@ def generate_solution(solution: np.ndarray, C: int, **kwargs) -> Tuple[np.ndarra
     """
     if kwargs.get("FFD", False):
         pass
-    
+
     if kwargs.get("BFD", False):
         pass
-    
+
     if kwargs.get("FD", False):
         pass
-    
+
     solution = np.sort(solution)[::-1]
-    containers = [C] * len(solution)  
-    
+    containers = [C] * len(solution)
+
     for index, value in enumerate(solution):
         containers[index] -= int(value)
-        
+
     solution = [np.array([elemento], dtype=int) for elemento in solution]
-    
+
     return solution, containers
 
 
@@ -66,8 +69,9 @@ def fitness(solution: np.ndarray) -> int:
     -------
     int
         The fitness score, defined as the number of elements in the solution.
-    """  
+    """
     return len(solution)
+
 
 def theoretical_minimum(solution: np.ndarray, C: int) -> int:
     """
@@ -85,5 +89,5 @@ def theoretical_minimum(solution: np.ndarray, C: int) -> int:
     -------
     int
         The theoretical minimum, rounded up.
-    """    
+    """
     return math.ceil(solution.sum() / C)
