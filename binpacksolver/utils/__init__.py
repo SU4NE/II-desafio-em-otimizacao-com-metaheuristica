@@ -1,11 +1,12 @@
+from tabu_structure import TabuStructure
+
 from .online_algorithms import (best_fit_decreasing, first_fit,
                                 first_fit_decreasing)
 from .support_functions import fitness, generate_solution, theoretical_minimum
-#from .a import TabuStructure
 from .utils import check_end, merge_np
 
 __all__ = [
-    "generate_solution",
+    "TabuStructure" "generate_solution",
     "fitness",
     "theoretical_minimum",
     "check_end",
