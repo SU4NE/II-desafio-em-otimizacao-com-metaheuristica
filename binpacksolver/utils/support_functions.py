@@ -1,53 +1,89 @@
-"""_summary_"""
+"""
+Solution Generation Module
+
+This module contains functions to generate a solution and evaluate its
+fitness based on a given array of values.
+"""
 
 import numpy as np
+import math
+from typing import List, Tuple
 
-
-def generate_solution(N: int, C: int, **kwargs) -> np.ndarray:
+def generate_solution(solution: np.ndarray, C: int, **kwargs) -> Tuple[np.ndarray, List]:
     """
-    Generates a solution consisting of random integers.
+    Generates a modified solution array based on the given parameters.
 
-    Parameters
-    ----------
-    N : int
-        The number of random integers to generate.
-    C : int
-        The upper bound (exclusive) for the random integers.
-
-    Returns
-    -------
-    np.ndarray
-        A NumPy array containing C random integers in the range [0, N).
-    """
-    return np.random.randint(C, 1, N)
-
-
-def fitness(solution: np.ndarray, C: int) -> int:
-    """
-    Counts how many times the cumulative sum exceeds C.
+    If the 'FFD', 'BFD', or 'FD' keyword argument is provided and set to True, 
+    the function can implement heuristics such as First-Fit Decreasing (FFD), 
+    Best-Fit Decreasing (BFD), or First-Fit (FD) to prioritize the best solutions.
 
     Parameters
     ----------
     solution : np.ndarray
-        Array of values to evaluate the cumulative sum.
-    C : int
-        Threshold value. Each time the cumulative sum exceeds C, it counts.
+        An array representing the current solution.
+    C: int
+        Max line value (container capacity).
+
+    Returns
+    -------
+    np.ndarray
+        A new solution array, sorted in descending order.
+    List[int]
+        A list representing the remaining space in each container.
+    """
+    if kwargs.get("FFD", False):
+        pass
+    
+    if kwargs.get("BFD", False):
+        pass
+    
+    if kwargs.get("FD", False):
+        pass
+    
+    solution = np.sort(solution)[::-1]
+    containers = [C] * len(solution)  
+    
+    for index, value in enumerate(solution):
+        containers[index] -= int(value)
+        
+    solution = [np.array([elemento], dtype=int) for elemento in solution]
+    
+    return solution, containers
+
+
+def fitness(solution: np.ndarray) -> int:
+    """
+    Calculates the fitness of the given solution.
+
+    The fitness is defined as the length of the solution array.
+
+    Parameters
+    ----------
+    solution : np.ndarray
+        An array representing the current solution.
 
     Returns
     -------
     int
-        The total number of times the cumulative sum exceeded C.
+        The fitness score, defined as the number of elements in the solution.
+    """  
+    return len(solution)
+
+def theoretical_minimum(solution: np.ndarray, C: int) -> int:
     """
-    sum = 0
-    response = 0
+    Calculates the theoretical minimum based on the sum of the solution
+    and a given capacity C.
 
-    for value in solution:
-        sum += value
-        if sum > C:
-            response += 1
-            sum = value
+    Parameters
+    ----------
+    solution : np.ndarray
+        An array representing the current solution.
+    C : int
+        An integer representing the capacity.
 
-    if sum > 0:
-        response += 1
-
-    return response
+    Returns
+    -------
+    int
+        The theoretical minimum, rounded up.
+    """    
+    return math.ceil(solution.sum() / C)

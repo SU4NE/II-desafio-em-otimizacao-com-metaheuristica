@@ -1,110 +1,93 @@
-from collections import deque
-from typing import Dict, List, Tuple
-import numpy as np
-import random
+"""
+Tabu Structure Module
 
+This module implements the TabuStructure class, which manages a tabu list 
+to store a set of forbidden moves or elements. The structure allows for 
+efficient insertion and lookup of elements while maintaining a maximum 
+capacity. When the maximum size is exceeded, the oldest elements are 
+removed to make room for new entries.
+
+Key Features:
+- Efficiently checks for the existence of elements in the tabu list.
+- Supports the insertion of new elements, ensuring uniqueness.
+- Automatically manages the maximum size of the tabu list.
+"""
+from collections import deque
+from typing import Tuple, Set
 
 class TabuStructure:
-    def __init__(self, N: int, M: int, R: int):
-        """Initialize the Tabu Structure.
+    """Tabu structure to store a set of forbidden moves, with limited capacity."""
+    
+    def __init__(self, N: int):
+        """
+        Initializes the Tabu structure.
 
         Parameters
         ----------
         N : int
-            The maximum size of the tabu list.
-        M : int
-            The maximum size of the elements associated with a single key in the tabu list.
-        R : int
-            The range used for segmenting the solution.
-        """
+            Maximum number of elements allowed in the tabu set.
+        """        
         self.N: int = N
-        self.M: int = min(N, M)
-        self.R: int = R
         self.itens: deque = deque()
-        self.tabu: Dict[int, List[List]] = {}
+        self.tabu: Set[Tuple[int, int]] = set()
 
-    def __segment_info(
-        self, index: int, solution: np.ndarray
-    ) -> Tuple[int, np.ndarray]:
-        """Extract the element and its subarray from the solution.
-
-        Parameters
-        ----------
-        index : int
-            The index of the element in the solution array.
-        solution : np.ndarray
-            The array representing the current solution.
-
-        Returns
-        -------
-        Tuple[int, List]
-            A tuple containing the element and its corresponding subarray.
+    def __check(self, element: Tuple[int, int]) -> bool:
         """
-        element: int = solution[index]
-        solution = list(solution)
-        subarray: List = solution[index + 1 : max(len(solution), index + self.R + 1)]
-        return element, subarray
-
-    def __check(self, element: int, subarray: List) -> bool:
-        """Check if the element and its subarray are in the tabu list.
+        Checks if the given element is in the tabu set.
 
         Parameters
         ----------
-        element : int
-            The element to check in the tabu list.
-        subarray : List
-            The subarray associated with the element.
+        element : Tuple[int, int]
+            Element to be checked.
 
         Returns
         -------
         bool
-            True if the element and subarray are in the tabu list, False otherwise.
-        """
-        return element in self.tabu and subarray in self.tabu[element]
+            True if the element is in the tabu set, False otherwise.
+        """     
+        return element in self.tabu
 
-    def find(self, index: int, solution: np.ndarray) -> bool:
-        """Check if an element is in the tabu list along with its subarray.
+    def find(self, element: Tuple[int, int]) -> bool:
+        """
+        Public method to check if the element is in the tabu set.
 
         Parameters
         ----------
-        index : int
-            The index of the element in the solution array to check.
-        solution : np.ndarray
-            The array representing the current solution.
+        element : Tuple[int, int]
+            Element to find in the tabu set.
 
         Returns
         -------
         bool
-            True if the element is in the tabu list and the subarray exists,
-            False otherwise.
-        """
-        element, subarray = self.__segment_info(index, solution)
-        return self.__check(element, subarray)
+            True if the element is found, False otherwise.
+        """        
+        return self.__check(element)
 
-    def insert(self, index: int, solution: np.ndarray):
-        """Insert an element and its subarray into the tabu list.
+    def insert(self, element: Tuple[int, int]) -> bool:
+        """
+        Inserts a new element into the tabu set. If the element already exists,
+        it returns False without modifying the set. If the set exceeds its 
+        maximum size, the oldest element is removed.
 
         Parameters
         ----------
-        index : int
-            The index of the element in the solution array to insert.
-        solution : np.ndarray
-            The array representing the current solution.
-        """
-        element, subarray = self.__segment_info(index, solution)
+        element : Tuple[int, int]
+            The element to add to the tabu set.
 
-        if self.__check(element, subarray):
-            if len(self.tabu[element]) > self.M:
-                random_item = random.choice(self.tabu[element])
-                self.tabu[element].remove(random_item)
-            return
+        Returns
+        -------
+        bool
+            True if the element was successfully inserted, False if it was 
+            already in the tabu set.
+        """   
+        if self.__check(element):
+            return False
 
-        if not element in self.tabu:
-            self.tabu[element] = []
-
-        self.tabu[element].append(subarray)
+        self.tabu.add(element)
         self.itens.append(element)
+        
         if len(self.tabu) > self.N:
             element = self.itens.popleft()
-            if element in self.tabu:
-                self.tabu.pop(element)
+            self.tabu.discard(element)
+        
+        return True
