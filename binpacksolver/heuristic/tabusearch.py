@@ -9,12 +9,12 @@ def __operations(C: int, best_fit: int, solution: np.ndarray, tabu: TabuStructur
     while a == b:
         a, b = np.random.choice(len(solution), size=2, replace=False)
 
-    if tabu.find(a, solution) and tabu.find(b, solution):
+    if not (tabu.find(a, solution) and tabu.find(b, solution)):
         new_solution = solution.copy()
         new_solution[a], new_solution[b] = new_solution[b], new_solution[a]
-        new_fit = fitness(solution, C)
+        new_fit = fitness(new_solution, C)
 
-        if new_fit < best_fit:
+        if new_fit <= best_fit:
             best_fit = new_fit
             tabu.insert(a, solution)
             tabu.insert(b, solution)
@@ -26,9 +26,9 @@ def __operations(C: int, best_fit: int, solution: np.ndarray, tabu: TabuStructur
 def tabu_search(
     array_base: np.ndarray,
     C: int,
-    time_max: float = 2,
+    time_max: float = 60,
     it_max: int = None,
-    tabu: TabuStructure = TabuStructure(3, 5, 2),
+    tabu: TabuStructure = TabuStructure(20, 2, 3),
     gen_solution: bool = False,
 ):
     solution: np.ndarray = array_base.copy()
@@ -39,5 +39,4 @@ def tabu_search(
     start_time: float = time.time()
     while (time_max and time.time() - start_time < time_max) or (it and it < it_max):
         best_fit, solution = __operations(C, best_fit, solution, tabu)
-
     return best_fit, solution

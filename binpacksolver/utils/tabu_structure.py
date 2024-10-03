@@ -21,7 +21,7 @@ class TabuStructure:
         self.M: int = min(N, M)
         self.R: int = R
         self.itens: deque = deque()
-        self.tabu: Dict[int, List[np.ndarray]] = {}
+        self.tabu: Dict[int, List[List]] = {}
 
     def __segment_info(
         self, index: int, solution: np.ndarray
@@ -37,23 +37,22 @@ class TabuStructure:
 
         Returns
         -------
-        Tuple[int, np.ndarray]
+        Tuple[int, List]
             A tuple containing the element and its corresponding subarray.
         """
         element: int = solution[index]
-        subarray: np.ndarray = solution[
-            index + 1 : max(len(solution), index + self.R + 1)
-        ]
+        solution = list(solution)
+        subarray: List = solution[index + 1 : max(len(solution), index + self.R + 1)]
         return element, subarray
 
-    def __check(self, element: int, subarray: np.ndarray) -> bool:
+    def __check(self, element: int, subarray: List) -> bool:
         """Check if the element and its subarray are in the tabu list.
 
         Parameters
         ----------
         element : int
             The element to check in the tabu list.
-        subarray : np.ndarray
+        subarray : List
             The subarray associated with the element.
 
         Returns
@@ -100,8 +99,12 @@ class TabuStructure:
                 self.tabu[element].remove(random_item)
             return
 
+        if not element in self.tabu:
+            self.tabu[element] = []
+
         self.tabu[element].append(subarray)
         self.itens.append(element)
         if len(self.tabu) > self.N:
             element = self.itens.popleft()
-            self.tabu.pop(element)
+            if element in self.tabu:
+                self.tabu.pop(element)

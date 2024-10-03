@@ -45,7 +45,7 @@ def fitness(solution: np.ndarray, C: int) -> int:
         sum += value
         if sum > C:
             response += 1
-            sum = 0
+            sum = value
 
     if sum > 0:
         response += 1
