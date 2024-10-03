@@ -1,24 +1,21 @@
 """_summary_"""
 
-import numpy as np
-import time
 import random
+import time
 from typing import List, Tuple
-from binpacksolver.utils import (
-    TabuStructure,
-    fitness,
-    generate_solution,
-    theoretical_minimum,
-    check_end,
-    merge_np,
-)
+
+import numpy as np
+
+from binpacksolver.utils import (TabuStructure, check_end, fitness,
+                                 generate_solution, merge_np,
+                                 theoretical_minimum)
 
 
 def __container_concatenate(
     a: int, b: int, containers: List[int], solution: np.ndarray
 ) -> np.ndarray:
     """
-    Concatenates elements from line b into line a, respecting the capacity of container a.
+    concatenates elements from line b into line a, respecting the capacity of container a.
 
     Parameters
     ----------
@@ -53,7 +50,7 @@ def __container_concatenate(
 
 
 def __container_change(
-    a: int, b: int, containers: List[int], solution: List[np.ndarray], C: int
+    a: int, b: int, containers: List[int], solution: List[np.ndarray], c: int
 ) -> np.ndarray:
 
     a_line = solution[a].copy()
@@ -63,7 +60,7 @@ def __container_change(
     for x in a_line:
         idx = np.searchsorted(cumsum_b, x)
 
-        if idx > 1 and cumsum_b[-1] - cumsum_b[idx - 1] + x <= C:
+        if idx > 1 and cumsum_b[-1] - cumsum_b[idx - 1] + x <= c:
             range_b: np.ndarray = solution[b][:idx]
             update_a.append(range_b)
             index_to_remove = np.where(solution[a] == x)[0]
@@ -80,8 +77,8 @@ def __container_change(
     for subrange in update_a:
         solution[a] = merge_np(solution[a], subrange)
 
-    containers[a] = C - solution[a].sum()
-    containers[b] = C - solution[b].sum()
+    containers[a] = c - solution[a].sum()
+    containers[b] = c - solution[b].sum()
 
     return solution
 
@@ -91,7 +88,7 @@ def __container_insert(
     containers: List[int],
     solution: List[np.ndarray],
     best_fit: int,
-    C: int,
+    c: int,
 ) -> Tuple[List[np.ndarray], int]:
     """_summary_
 
@@ -113,15 +110,15 @@ def __container_insert(
     """
     a, b = indexs
 
-    if containers[a] >= C - containers[b]:
-        containers[a] -= C - containers[b]
+    if containers[a] >= c - containers[b]:
+        containers[a] -= c - containers[b]
         solution[a] = merge_np(solution[a], solution[b])
         del solution[b]
         del containers[b]
         return solution, best_fit - 1
 
     solution = __container_concatenate(a, b, containers, solution)
-    solution = __container_change(a, b, containers, solution, C)
+    solution = __container_change(a, b, containers, solution, c)
 
     return solution, best_fit
 
@@ -131,7 +128,7 @@ def __operations(
     solution: List[np.ndarray],
     tabu: TabuStructure,
     containers: List[int],
-    C: int,
+    c: int,
 ) -> Tuple[List[np.ndarray], int]:
     """_summary_
 
@@ -160,19 +157,19 @@ def __operations(
 
     tabu.insert((a, b))
     new_solution, new_fit = __container_insert(
-        (a, b), containers, solution, best_fit, C
+        (a, b), containers, solution, best_fit, c
     )
 
     return new_solution, new_fit
 
 
+# pylint: disable=R0913
 def tabu_search(
     array_base: np.ndarray,
-    C: int,
+    c: int,
     time_max: float = 60,
     max_it: int = None,
-    alpha: int = 4,
-    gen_solution: bool = True,
+    alpha: int = 4
 ):
     """_summary_
 
@@ -180,7 +177,7 @@ def tabu_search(
     ----------
     array_base : np.ndarray
         _description_
-    C : int
+    c : int
         _description_
     time_max : float, optional
         _description_, by default 60
@@ -188,8 +185,6 @@ def tabu_search(
         _description_, by default None
     tabu : int, optional
         _description_, by default 4
-    gen_solution : bool, optional
-        _description_, by default False
 
     Returns
     -------
@@ -197,17 +192,16 @@ def tabu_search(
         _description_
     """
     solution: np.ndarray = array_base.copy()
-    if gen_solution:
-        solution, containers = generate_solution(solution, C)
+    solution, containers = generate_solution(solution, c)
 
-    th_min: int = theoretical_minimum(array_base, C)
+    th_min: int = theoretical_minimum(array_base, c)
     best_fit: int = fitness(solution)
     tabu = TabuStructure(best_fit // max(alpha, best_fit - 1))
     it: int = 0
     time_start: float = time.time()
 
     while check_end(th_min, best_fit, time_max, time_start, time.time(), max_it, it):
-        solution, best_fit = __operations(best_fit, solution, tabu, containers, C)
+        solution, best_fit = __operations(best_fit, solution, tabu, containers, c)
         solution.reverse()
         it += 1
 

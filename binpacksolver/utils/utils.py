@@ -7,7 +7,7 @@ other generic operations.
 
 import numpy as np
 
-
+# pylint: disable=R0913
 def check_end(
     th_min: int,
     best_fit: int,
@@ -57,6 +57,7 @@ def check_end(
 
     return best_fit > th_min
 
+# pylint: enable=R0913
 
 def merge_np(a: np.ndarray, b: np.ndarray) -> np.ndarray:
     """

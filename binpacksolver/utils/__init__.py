@@ -1,5 +1,5 @@
+from .support_functions import fitness, generate_solution, theoretical_minimum
 from .tabu_structure import TabuStructure
-from .support_functions import generate_solution, fitness, theoretical_minimum
 from .utils import check_end, merge_np
 
 __all__ = [

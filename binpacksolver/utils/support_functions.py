@@ -5,13 +5,14 @@ This module contains functions to generate a solution and evaluate its
 fitness based on a given array of values.
 """
 
-import numpy as np
 import math
 from typing import List, Tuple
 
+import numpy as np
+
 
 def generate_solution(
-    solution: np.ndarray, C: int, **kwargs
+    solution: np.ndarray, c: int, **kwargs
 ) -> Tuple[np.ndarray, List]:
     """
     Generates a modified solution array based on the given parameters.
@@ -24,7 +25,7 @@ def generate_solution(
     ----------
     solution : np.ndarray
         An array representing the current solution.
-    C: int
+    c: int
         Max line value (container capacity).
 
     Returns
@@ -44,7 +45,7 @@ def generate_solution(
         pass
 
     solution = np.sort(solution)[::-1]
-    containers = [C] * len(solution)
+    containers = [c] * len(solution)
 
     for index, value in enumerate(solution):
         containers[index] -= int(value)
@@ -56,7 +57,7 @@ def generate_solution(
 
 def fitness(solution: np.ndarray) -> int:
     """
-    Calculates the fitness of the given solution.
+    calculates the fitness of the given solution.
 
     The fitness is defined as the length of the solution array.
 
@@ -73,16 +74,16 @@ def fitness(solution: np.ndarray) -> int:
     return len(solution)
 
 
-def theoretical_minimum(solution: np.ndarray, C: int) -> int:
+def theoretical_minimum(solution: np.ndarray, c: int) -> int:
     """
-    Calculates the theoretical minimum based on the sum of the solution
-    and a given capacity C.
+    calculates the theoretical minimum based on the sum of the solution
+    and a given capacity c.
 
     Parameters
     ----------
     solution : np.ndarray
         An array representing the current solution.
-    C : int
+    c : int
         An integer representing the capacity.
 
     Returns
@@ -90,4 +91,4 @@ def theoretical_minimum(solution: np.ndarray, C: int) -> int:
     int
         The theoretical minimum, rounded up.
     """
-    return math.ceil(solution.sum() / C)
+    return math.ceil(solution.sum() / c)

@@ -21,4 +21,8 @@ jobs:
 
     - name: Run pylint
       run: |
-        pylint --rcfile=config/lint/.pylintrc binpacksolver
+        pylint --rcfile=config/lint/.pylintrc binpacksolver/
+
+    - name: Run isort
+      run: |
+        isort --settings-path=config/lint/setup-lint.cfg binpacksolver/

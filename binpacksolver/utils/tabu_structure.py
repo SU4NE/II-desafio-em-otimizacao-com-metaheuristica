@@ -14,22 +14,22 @@ Key Features:
 """
 
 from collections import deque
-from typing import Tuple, Set
+from typing import Set, Tuple
 
 
 class TabuStructure:
     """Tabu structure to store a set of forbidden moves, with limited capacity."""
 
-    def __init__(self, N: int):
+    def __init__(self, n: int):
         """
         Initializes the Tabu structure.
 
         Parameters
         ----------
-        N : int
+        n : int
             Maximum number of elements allowed in the tabu set.
         """
-        self.N: int = N
+        self.n: int = n
         self.itens: deque = deque()
         self.tabu: Set[Tuple[int, int]] = set()
 
@@ -88,7 +88,7 @@ class TabuStructure:
         self.tabu.add(element)
         self.itens.append(element)
 
-        if len(self.tabu) > self.N:
+        if len(self.tabu) > self.n:
             element = self.itens.popleft()
             self.tabu.discard(element)
 
