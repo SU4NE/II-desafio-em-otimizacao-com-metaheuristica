@@ -1,0 +1,4 @@
+# Python 
+black==24.8.0
+isort==5.13.2
+pylint==3.2.6

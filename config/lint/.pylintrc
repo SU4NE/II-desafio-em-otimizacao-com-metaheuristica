@@ -1,0 +1,8 @@
+[MASTER]
+ignore-patterns=__init__.py
+
+[MESSAGES CONTROL]
+disable=E0401, W0718, C0114, E1101
+
+[REPORTS]
+output-format=colorized
