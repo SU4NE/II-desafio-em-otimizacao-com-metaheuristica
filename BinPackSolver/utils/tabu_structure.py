@@ -3,6 +3,7 @@ from typing import Dict, List, Tuple
 import numpy as np
 import random
 
+
 class TabuStructure:
     def __init__(self, N: int, M: int, R: int):
         """Initialize the Tabu Structure.
@@ -22,7 +23,9 @@ class TabuStructure:
         self.itens: deque = deque()
         self.tabu: Dict[int, List[np.ndarray]] = {}
 
-    def __segment_info(self, index: int, solution: np.ndarray) -> Tuple[int, np.ndarray]:
+    def __segment_info(
+        self, index: int, solution: np.ndarray
+    ) -> Tuple[int, np.ndarray]:
         """Extract the element and its subarray from the solution.
 
         Parameters
@@ -36,11 +39,13 @@ class TabuStructure:
         -------
         Tuple[int, np.ndarray]
             A tuple containing the element and its corresponding subarray.
-        """        
+        """
         element: int = solution[index]
-        subarray: np.ndarray = solution[index + 1 : max(len(solution), index + self.R + 1)]
+        subarray: np.ndarray = solution[
+            index + 1 : max(len(solution), index + self.R + 1)
+        ]
         return element, subarray
-    
+
     def __check(self, element: int, subarray: np.ndarray) -> bool:
         """Check if the element and its subarray are in the tabu list.
 
@@ -55,9 +60,9 @@ class TabuStructure:
         -------
         bool
             True if the element and subarray are in the tabu list, False otherwise.
-        """        
+        """
         return element in self.tabu and subarray in self.tabu[element]
-        
+
     def find(self, index: int, solution: np.ndarray) -> bool:
         """Check if an element is in the tabu list along with its subarray.
 
@@ -86,15 +91,15 @@ class TabuStructure:
             The index of the element in the solution array to insert.
         solution : np.ndarray
             The array representing the current solution.
-        """        
+        """
         element, subarray = self.__segment_info(index, solution)
-        
+
         if self.__check(element, subarray):
             if len(self.tabu[element]) > self.M:
                 random_item = random.choice(self.tabu[element])
                 self.tabu[element].remove(random_item)
             return
-        
+
         self.tabu[element].append(subarray)
         self.itens.append(element)
         if len(self.tabu) > self.N:

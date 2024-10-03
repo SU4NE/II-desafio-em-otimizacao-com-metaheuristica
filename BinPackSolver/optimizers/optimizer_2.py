@@ -1,6 +1,8 @@
 """_summary_."""
+
 import copy
 import random
+
 
 def opt2_s(p, n):
     """

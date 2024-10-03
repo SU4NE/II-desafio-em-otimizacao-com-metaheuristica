@@ -2,6 +2,7 @@
 
 import numpy as np
 
+
 def generate_solution(N: int, C: int, **kwargs) -> np.ndarray:
     """
     Generates a solution consisting of random integers.
@@ -20,6 +21,7 @@ def generate_solution(N: int, C: int, **kwargs) -> np.ndarray:
     """
     return np.random.randint(C, 1, N)
 
+
 def fitness(solution: np.ndarray, C: int) -> int:
     """
     Counts how many times the cumulative sum exceeds C.
@@ -35,17 +37,17 @@ def fitness(solution: np.ndarray, C: int) -> int:
     -------
     int
         The total number of times the cumulative sum exceeded C.
-    """    
+    """
     sum = 0
     response = 0
-    
+
     for value in solution:
         sum += value
         if sum > C:
             response += 1
             sum = 0
-        
+
     if sum > 0:
-        response+=1
-            
+        response += 1
+
     return response

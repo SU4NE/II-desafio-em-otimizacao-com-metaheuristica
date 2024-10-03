@@ -1,6 +1,8 @@
 """_summary_."""
+
 import copy
 import random
+
 
 def opt3_s(p, n):
     """
@@ -28,9 +30,12 @@ def opt3_s(p, n):
 
     start_idx = random.randint(0, n - left - right)
 
-    aux[start_idx:start_idx + left], \
-        aux[start_idx + left:start_idx + left + right] = \
-        aux[start_idx + left: start_idx + left + right], \
-        aux[start_idx:start_idx + left]
+    (
+        aux[start_idx : start_idx + left],
+        aux[start_idx + left : start_idx + left + right],
+    ) = (
+        aux[start_idx + left : start_idx + left + right],
+        aux[start_idx : start_idx + left],
+    )
 
     return aux
