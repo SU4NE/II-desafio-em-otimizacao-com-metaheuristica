@@ -8,6 +8,11 @@ other generic operations.
 import numpy as np
 
 
+def lower_bound(items, capacity):
+    """calculate the theoretical minimum amount of bins."""
+    return (sum(items) + capacity - 1) // capacity
+
+
 # pylint: disable=R0913
 def check_end(
     th_min: int,
