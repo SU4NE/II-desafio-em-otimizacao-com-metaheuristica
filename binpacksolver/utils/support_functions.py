@@ -73,7 +73,7 @@ def generate_solution(
     return solution, containers
 
 
-def fitness(solution: np.ndarray) -> int:
+def fitness(solution: List[np.ndarray]) -> int:
     """
     calculates the fitness of the given solution.
 
@@ -81,7 +81,7 @@ def fitness(solution: np.ndarray) -> int:
 
     Parameters
     ----------
-    solution : np.ndarray
+    solution : List[np.ndarray]
         An array representing the current solution.
 
     Returns
@@ -144,3 +144,21 @@ def tournament_roulette(
     winner_value = random.choices(tournament, weights=beta, k=1)[0]
     winner_index = tour_idxs[tournament.index(winner_value)]
     return winner_index
+
+
+def find_best_solution(solutions):
+    """
+    Updates the best solution found in the current solutions.
+
+    Parameters
+    ----------
+    solutions : list
+        The current solutions of individuals.
+
+    Returns
+    -------
+    list
+        The best solution found.
+    """
+    solutions = sorted(solutions, key=fitness, reverse=True)
+    return solutions[0]

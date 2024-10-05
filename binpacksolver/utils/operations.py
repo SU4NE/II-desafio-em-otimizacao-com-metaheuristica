@@ -107,7 +107,7 @@ def container_insert(
     solution: List[np.ndarray],
     best_fit: int,
     c: int,
-) -> Tuple[List[np.ndarray], int]:
+) -> Tuple[List[np.ndarray], int, List[int]]:
     """
     Inserts items between two containers using the best fit strategy.
 
@@ -126,8 +126,8 @@ def container_insert(
 
     Returns
     -------
-    Tuple[List[np.ndarray], int]
-        Updated solution and new best-fit count.
+    Tuple[List[np.ndarray], int, List[int]]
+        Updated solution, new best-fit and containers count.
     """
     a, b = indexs
     if containers[a] >= c - containers[b]:
@@ -135,9 +135,9 @@ def container_insert(
         solution[a] = merge_np(solution[a], solution[b])
         del solution[b]
         del containers[b]
-        return solution, best_fit - 1
+        return solution, best_fit - 1, containers
 
     solution = container_concatenate(a, b, containers, solution)
     solution = container_change(a, b, containers, solution, c)
 
-    return solution, best_fit
+    return solution, best_fit, containers
