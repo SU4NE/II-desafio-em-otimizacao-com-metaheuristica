@@ -11,6 +11,9 @@ from typing import List, Tuple
 
 import numpy as np
 
+from .online_algorithms import (best_fit_decreasing, first_fit,
+                                first_fit_decreasing)
+
 
 def generate_container(solution: List[np.ndarray], c: int) -> List[int]:
     """_summary_
@@ -39,9 +42,9 @@ def generate_solution(
     """
     Generates a modified solution array based on the given parameters.
 
-    If the 'FFD', 'BFD', or 'FD' keyword argument is provided and set to True,
+    If the 'FFD', 'BFD', or 'FF' keyword argument is provided and set to True,
     the function can implement heuristics such as First-Fit Decreasing (FFD),
-    Best-Fit Decreasing (BFD), or First-Fit (FD) to prioritize the best solutions.
+    Best-Fit Decreasing (BFD), or First-Fit (FF) to prioritize the best solutions.
 
     Parameters
     ----------
@@ -58,13 +61,16 @@ def generate_solution(
         A list representing the remaining space in each container.
     """
     if kwargs.get("FFD", False):
-        pass
+        solution = first_fit_decreasing(solution, c)
+        return solution, generate_container(solution, c)
 
     if kwargs.get("BFD", False):
-        pass
+        solution = best_fit_decreasing(solution, c, [])
+        return solution, generate_container(solution, c)
 
-    if kwargs.get("FD", False):
-        pass
+    if kwargs.get("FF", False):
+        solution = first_fit(solution, c, [])
+        return solution, generate_container(solution, c)
 
     solution = np.sort(solution)[::-1]
     solution = [np.array([elemento], dtype=int) for elemento in solution]
