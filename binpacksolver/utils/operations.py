@@ -1,3 +1,7 @@
+"""
+Module for operations in the Bin Packing Problem (BPP).
+"""
+
 from typing import List, Tuple
 
 import numpy as np
@@ -9,23 +13,23 @@ def container_concatenate(
     a: int, b: int, containers: List[int], solution: np.ndarray
 ) -> np.ndarray:
     """
-    concatenates elements from line b into line a, respecting the capacity of container a.
+    Concatenates items from container b into container a.
 
     Parameters
     ----------
     a : int
-        Index of line a in the solution.
+        Index of container a.
     b : int
-        Index of line b in the solution.
+        Index of container b.
     containers : List[int]
-        List of remaining capacities in each container.
+        List of container capacities.
     solution : np.ndarray
-        The 2D array representing the solution.
+        Current solution with item arrangements.
 
     Returns
     -------
     np.ndarray
-        The updated solution array after the concatenation.
+        Updated solution after concatenation.
     """
     a_line: np.ndarray = solution[a]
     b_line: np.ndarray = solution[b]
@@ -46,25 +50,26 @@ def container_concatenate(
 def container_change(
     a: int, b: int, containers: List[int], solution: List[np.ndarray], c: int
 ) -> np.ndarray:
-    """_summary_
+    """
+    Moves items from container a to b while considering capacity.
 
     Parameters
     ----------
     a : int
-        _description_
+        Index of container a.
     b : int
-        _description_
+        Index of container b.
     containers : List[int]
-        _description_
+        List of container capacities.
     solution : List[np.ndarray]
-        _description_
+        Current solution with item arrangements.
     c : int
-        _description_
+        Maximum capacity for containers.
 
     Returns
     -------
     np.ndarray
-        _description_
+        Updated solution after change.
     """
     a_line = solution[a].copy()
     cumsum_b = np.cumsum(solution[b])
@@ -103,23 +108,26 @@ def container_insert(
     best_fit: int,
     c: int,
 ) -> Tuple[List[np.ndarray], int]:
-    """_summary_
+    """
+    Inserts items between two containers using the best fit strategy.
 
     Parameters
     ----------
     indexs : Tuple[int, int]
-        _description_
+        Indices of containers a and b.
     containers : List[int]
-        _description_
-    solution : np.ndarray
-        _description_
+        List of container capacities.
+    solution : List[np.ndarray]
+        Current solution with item arrangements.
     best_fit : int
-        _description_
+        Current best-fit solution count.
+    c : int
+        Maximum capacity for containers.
 
     Returns
     -------
-    Tuple[np.ndarray, int]
-        _description_
+    Tuple[List[np.ndarray], int]
+        Updated solution and new best-fit count.
     """
     a, b = indexs
     if containers[a] >= c - containers[b]:

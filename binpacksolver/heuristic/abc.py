@@ -2,7 +2,7 @@ import random
 import time
 from copy import copy
 from dataclasses import dataclass
-from typing import List
+from typing import List, Tuple
 
 import numpy as np
 
@@ -13,7 +13,7 @@ from binpacksolver.utils import (check_end, container_insert, fitness,
 
 @dataclass
 class Bee:
-    """_summary_"""
+    """Represents a bee in the artificial bee colony algorithm."""
 
     source: List[np.ndarray]
     container: List[np.ndarray]
@@ -22,12 +22,20 @@ class Bee:
 
 
 def __bee_operation(b: Bee, c) -> Bee:
-    """_summary_
+    """
+    Performs a bee operation by modifying the source and container.
 
     Parameters
     ----------
     b : Bee
-        _description_
+        The bee to operate on.
+    c : int
+        Maximum container capacity.
+
+    Returns
+    -------
+    Bee
+        The updated bee after the operation.
     """
     n = b.fitness
     l = random.randint(0, n - 2)
@@ -42,23 +50,26 @@ def __bee_operation(b: Bee, c) -> Bee:
 def __scout_bees(
     bees: List[Bee], solution: List[np.ndarray], scout: int, employed: int, c: int
 ):
-    """_summary_
+    """
+    Resets the scout bees if their counter exceeds the scout limit.
 
     Parameters
     ----------
     bees : List[Bee]
-        _description_
+        List of bees.
     solution : List[np.ndarray]
-        _description_
+        The current solution.
     scout : int
-        _description_
+        The scout limit for resetting a bee.
     employed : int
-        _description_
+        Number of employed bees.
+    c : int
+        Maximum container capacity.
 
     Returns
     -------
-    _type_
-        _description_
+    List[Bee]
+        Updated list of bees after scouting.
     """
     for i in range(employed):
         if bees[i].counter >= scout:
@@ -70,34 +81,43 @@ def __scout_bees(
 
 
 def __employed_bees(bees: List[Bee], c: int) -> List[Bee]:
-    """_summary_
+    """
+    Applies bee operations on the employed bees.
 
     Parameters
     ----------
     bees : List[Bee]
-        _description_
+        List of employed bees.
     c : int
-        _description_
+        Maximum container capacity.
 
     Returns
     -------
-    _type_
-        _description_
+    List[Bee]
+        Updated list of employed bees.
     """
     return [__bee_operation(b, c) for b in bees]
 
 
 def __onlooker_bees(bees: List[Bee], c: int, gama: float, onlooker) -> List[Bee]:
-    """_summary_
+    """
+    Updates the onlooker bees using roulette selection.
 
     Parameters
     ----------
-    bees : List[List[Bee]]
-        _description_
+    bees : List[Bee]
+        List of bees.
     c : int
-        _description_
+        Maximum container capacity.
     gama : float
-        _description_
+        Parameter for roulette selection.
+    onlooker : int
+        Number of onlooker bees.
+
+    Returns
+    -------
+    List[Bee]
+        Updated list of onlooker bees.
     """
     sources = [bee.fitness for bee in bees]
 
@@ -113,21 +133,22 @@ def __onlooker_bees(bees: List[Bee], c: int, gama: float, onlooker) -> List[Bee]
 def __generate_bees_solution(
     solution: List[np.ndarray], c: int, employed: int
 ) -> List[Bee]:
-    """_summary_
+    """
+    Generates initial bee solutions for the employed bees.
 
     Parameters
     ----------
     solution : List[np.ndarray]
-        _description_
+        Initial solution.
     c : int
-        _description_
-    bees : tuple
-        _description_
+        Maximum container capacity.
+    employed : int
+        Number of employed bees.
 
     Returns
     -------
-    List[List[np.ndarray]]
-        _description_
+    List[Bee]
+        List of bees with initial solutions.
     """
     bees: List[Bee] = []
 
@@ -150,32 +171,33 @@ def artificial_bee_colony(
     onlooker: int = 10,
     scout: int = 10,
     gama: float = 1.8,
-):
-    """_summary_
+) -> Tuple[List[np.ndarray], int]:
+    """
+    Solves the BPP using the artificial bee colony algorithm.
 
     Parameters
     ----------
     array_base : np.ndarray
-        _description_
+        Initial item array.
     c : int
-        _description_
+        Maximum container capacity.
     time_max : float, optional
-        _description_, by default 60
+        Max time allowed for execution, by default 60.
     max_it : int, optional
-        _description_, by default None
+        Max iterations, by default None.
     employed : int, optional
-        _description_, by default 10
+        Number of employed bees, by default 10.
     onlooker : int, optional
-        _description_, by default 10
+        Number of onlooker bees, by default 10.
     scout : int, optional
-        _description_, by default 10
+        Scout limit before resetting a bee, by default 10.
     gama : float, optional
-        _description_, by default 1.8
+        Parameter for roulette selection, by default 1.8.
 
     Returns
     -------
-    _type_
-        _description_
+    Tuple[List[np.ndarray], int]
+        Best solution found and its fitness value.
     """
     solution: np.ndarray = array_base.copy()
     best_fit: int = fitness(solution)
