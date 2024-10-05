@@ -1,4 +1,6 @@
-"""_summary_"""
+"""
+Module for implementing the Tabu Search algorithm for optimization problems.
+"""
 
 import random
 import time
@@ -18,23 +20,26 @@ def __operations(
     containers: List[int],
     c: int,
 ) -> Tuple[List[np.ndarray], int]:
-    """_summary_
+    """
+    Performs operations for the Tabu Search algorithm.
 
     Parameters
     ----------
     best_fit : int
-        _description_
+        The best fitness value found so far.
     solution : np.ndarray
-        _description_
+        The current solution represented as an array.
     tabu : TabuStructure
-        _description_
+        The structure used to manage taboo moves.
     containers : List[int]
-        _description_
+        List of container capacities.
+    c : int
+        A parameter representing a constraint or capacity.
 
     Returns
     -------
-    Tuple[np.ndarray, int]
-        _description_
+    Tuple[List[np.ndarray], int]
+        The new solution and its fitness value.
     """
     a = random.randint(0, best_fit - 2)
     b = random.randint(a, best_fit - 1)
@@ -44,7 +49,9 @@ def __operations(
         b = random.randint(a, best_fit - 1)
 
     tabu.insert((a, b))
-    new_solution, new_fit = container_insert((a, b), containers, solution, best_fit, c)
+    new_solution, new_fit, containers = container_insert(
+        (a, b), containers, solution, best_fit, c
+    )
 
     return new_solution, new_fit
 
@@ -56,26 +63,27 @@ def tabu_search(
     time_max: float = 60,
     max_it: int = None,
     alpha: int = 4,
-):
-    """_summary_
+) -> Tuple[List[np.ndarray], int]:
+    """
+    Executes the Tabu Search algorithm for bin packing.
 
     Parameters
     ----------
     array_base : np.ndarray
-        _description_
+        The base array representing items to pack.
     c : int
-        _description_
+        The capacity of the bins or containers.
     time_max : float, optional
-        _description_, by default 60
+        Maximum allowable time for the search, by default 60.
     max_it : int, optional
-        _description_, by default None
-    tabu : int, optional
-        _description_, by default 4
+        Maximum number of iterations allowed, by default None.
+    alpha : int, optional
+        Parameter affecting tabu structure size, by default 4.
 
     Returns
     -------
-    _type_
-        _description_
+    Tuple[List[np.ndarray], int]
+        The best solution found and its fitness value.
     """
     solution: np.ndarray = array_base.copy()
     solution, containers = generate_solution(solution, c)

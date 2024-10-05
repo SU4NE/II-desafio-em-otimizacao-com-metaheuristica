@@ -1,3 +1,7 @@
+"""
+Module for implementing the Artificial Bee Colony (ABC) algorithm for optimization problems.
+"""
+
 import random
 import time
 from copy import copy
@@ -40,7 +44,12 @@ def __bee_operation(b: Bee, c) -> Bee:
     n = b.fitness
     l = random.randint(0, n - 2)
     r = random.randint(l, n - 1)
-    b.source, b.fitness = container_insert((l, r), b.container, b.source, n, c)
+    while l == r:
+        l = random.randint(0, n - 2)
+        r = random.randint(l, n - 1)
+    b.source, b.fitness, b.container = container_insert(
+        (l, r), b.container, b.source, n, c
+    )
     if b.fitness == n:
         b.counter += 1
 
@@ -219,4 +228,4 @@ def artificial_bee_colony(
     return base_solution, best_fit
 
 
-# pylint: enable=R0913
+# pylint: enable=R0913 R0914
