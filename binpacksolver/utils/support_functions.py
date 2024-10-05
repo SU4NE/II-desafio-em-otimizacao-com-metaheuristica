@@ -6,9 +6,31 @@ fitness based on a given array of values.
 """
 
 import math
+import random
 from typing import List, Tuple
 
 import numpy as np
+
+
+def generate_container(solution: List[np.ndarray], c: int) -> List[int]:
+    """_summary_
+
+    Parameters
+    ----------
+    solution : List[np.ndarray]
+        _description_
+    c : int
+        _description_
+
+    Returns
+    -------
+    List[int]
+        _description_
+    """
+    containers = [c] * len(solution)
+    for index, value in enumerate(solution):
+        containers[index] -= value.sum()
+    return containers
 
 
 def generate_solution(
@@ -45,17 +67,13 @@ def generate_solution(
         pass
 
     solution = np.sort(solution)[::-1]
-    containers = [c] * len(solution)
-
-    for index, value in enumerate(solution):
-        containers[index] -= int(value)
-
     solution = [np.array([elemento], dtype=int) for elemento in solution]
+    containers = generate_container(solution, c)
 
     return solution, containers
 
 
-def fitness(solution: np.ndarray) -> int:
+def fitness(solution: List[np.ndarray]) -> int:
     """
     calculates the fitness of the given solution.
 
@@ -63,7 +81,7 @@ def fitness(solution: np.ndarray) -> int:
 
     Parameters
     ----------
-    solution : np.ndarray
+    solution : List[np.ndarray]
         An array representing the current solution.
 
     Returns
@@ -92,3 +110,55 @@ def theoretical_minimum(solution: np.ndarray, c: int) -> int:
         The theoretical minimum, rounded up.
     """
     return math.ceil(solution.sum() / c)
+
+
+def tournament_roulette(
+    population: List[int], gama: float = 1.8, tour_size: int = 3
+) -> int:
+    """
+    Selects the index of an individual from the population using a combination
+    of tournament selection and roulette wheel.
+
+    Parameters
+    ----------
+    population : List[int]
+        A list representing the population (e.g., fitness values).
+    gama : float, optional
+        The parameter gama that adjusts the probability distribution in the
+        roulette selection, by default 1.8.
+    tour_size : int, optional
+        The number of individuals selected to participate in the tournament,
+        by default 3.
+
+    Returns
+    -------
+    int
+        The index of the winning individual in the original population.
+    """
+    tour_idxs = random.sample(range(len(population)), tour_size)
+    tournament = [population[i] for i in tour_idxs]
+    tour_sum = sum(v**gama for v in tournament)
+
+    beta = [(v**gama) / tour_sum for v in tournament]
+
+    winner_value = random.choices(tournament, weights=beta, k=1)[0]
+    winner_index = tour_idxs[tournament.index(winner_value)]
+    return winner_index
+
+
+def find_best_solution(solutions):
+    """
+    Updates the best solution found in the current solutions.
+
+    Parameters
+    ----------
+    solutions : list
+        The current solutions of individuals.
+
+    Returns
+    -------
+    list
+        The best solution found.
+    """
+    solutions = sorted(solutions, key=fitness, reverse=True)
+    return solutions[0]
