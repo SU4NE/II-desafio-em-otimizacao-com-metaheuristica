@@ -82,12 +82,15 @@ def best_fit_decreasing(
     sorted_items = np.sort(items)[::-1]
 
     for item in sorted_items:
-        space_left = capacity - np.array([bin_p.sum() for bin_p in bins])
-        valid_bins = space_left[space_left >= item]
+        if bins:
+            space_left = capacity - np.array([bin_p.sum() for bin_p in bins])
+            valid_bins = np.where(space_left >= item)[0]
 
-        if valid_bins.size > 0:
-            best_fit_index = np.argmin(valid_bins - item)
-            bins[best_fit_index] = np.append(bins[best_fit_index], item)
+            if valid_bins.size > 0:
+                best_fit_index = valid_bins[np.argmin(space_left[valid_bins] - item)]
+                bins[best_fit_index] = np.append(bins[best_fit_index], item)
+            else:
+                bins.append(np.array([item]))
         else:
             bins.append(np.array([item]))
 
