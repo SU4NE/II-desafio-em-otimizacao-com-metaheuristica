@@ -2,10 +2,11 @@ from .online_algorithms import (best_fit_decreasing, first_fit,
                                 first_fit_decreasing)
 from .operations import (container_change, container_concatenate,
                          container_insert)
-from .support_functions import (fitness, generate_container, generate_solution,
+from .support_functions import (find_best_solution, fitness,
+                                generate_container, generate_solution,
                                 theoretical_minimum, tournament_roulette)
 from .tabu_structure import TabuStructure
-from .utils import check_end, lower_bound, merge_np
+from .utils import check_end, has_common_elements, merge_np
 
 __all__ = [
     "TabuStructure",
@@ -13,14 +14,15 @@ __all__ = [
     "generate_solution",
     "fitness",
     "theoretical_minimum",
+    "find_best_solution",
     "tournament_roulette",
     "container_change",
     "container_concatenate",
     "container_insert",
     "check_end",
     "merge_np",
+    "has_common_elements",
     "first_fit",
     "first_fit_decreasing",
     "best_fit_decreasing",
-    "lower_bound",
 ]

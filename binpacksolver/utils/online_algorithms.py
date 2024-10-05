@@ -1,71 +1,94 @@
-def first_fit(items: list, capacity: int, bins) -> list:
+"""
+Module for implementing various Bin Packing algorithms.
+"""
+
+from typing import List
+
+import numpy as np
+
+
+def first_fit(
+    items: np.ndarray, capacity: int, bins: List[np.ndarray]
+) -> List[np.ndarray]:
     """
     Implements the First-Fit algorithm for the Bin Packing problem.
 
-    Parameters:
-    items (list[int]): A list of item sizes to be placed in bins.
-    capacity (int): The maximum capacity of each bin.
+    Parameters
+    ----------
+    items : np.ndarray
+        A list of item sizes to be placed in bins.
+    capacity : int
+        The maximum capacity of each bin.
+    bins : list[list[int]]
+        A list of existing bins where items will be placed.
 
-    Returns:
-    list: A list of bins where each bin is a list of items.
+    Returns
+    -------
+    List[np.ndarray]
+        A list of bins where each bin is a list of items.
     """
     for item in items:
-        placed = False
+        current_fill = np.array([np.sum(bin_p) for bin_p in bins])
+        available_bins = np.where(current_fill + item <= capacity)[0]
 
-        for bin_p in bins:
-            if sum(bin_p) + item <= capacity:
-                bin_p.append(item)
-                placed = True
-                break
-
-        if not placed:
-            bins.append([item])
+        if available_bins.size > 0:
+            bins[available_bins[0]] = np.append(bins[available_bins[0]], item)
+        else:
+            bins.append(np.array([item]))
 
     return bins
 
 
-def first_fit_decreasing(items: list, capacity: int) -> list:
+def first_fit_decreasing(items: np.ndarray, capacity: int) -> List[np.ndarray]:
     """
     Implements the First-Fit Decreasing algorithm for the Bin Packing problem.
 
-    Parameters:
-    items (list[int]): A list of item sizes to be placed in bins.
-    capacity (int): The maximum capacity of each bin.
+    Parameters
+    ----------
+    items : list[int]
+        A list of item sizes to be placed in bins.
+    capacity : int
+        The maximum capacity of each bin.
 
-    Returns:
-    list: A list of bins where each bin is a list of items.
+    Returns
+    -------
+    List[np.ndarray]
+        A list of bins where each bin is a list of items.
     """
     sorted_items = sorted(items, reverse=True)
-
     return first_fit(sorted_items, capacity, [[]])
 
 
-def best_fit_decreasing(items: list, capacity: int, bins) -> list:
+def best_fit_decreasing(
+    items: np.ndarray, capacity: int, bins: List[np.ndarray]
+) -> List[np.ndarray]:
     """
     Implements the Best-Fit Decreasing algorithm for the Bin Packing problem.
 
-    Parameters:
-    items (list[int]): A list of item sizes to be placed in bins.
-    capacity (int): The maximum capacity of each bin.
+    Parameters
+    ----------
+    items : list[int]
+        A list of item sizes to be placed in bins.
+    capacity : int
+        The maximum capacity of each bin.
+    bins : list[list[int]]
+        A list of existing bins where items will be placed.
 
-    Returns:
-    list: A list of bins where each bin is a list of items.
+    Returns
+    -------
+    List[np.ndarray]
+        A list of bins where each bin is a list of items.
     """
-    sorted_items = sorted(items, reverse=True)
+    sorted_items = np.sort(items)[::-1]
 
     for item in sorted_items:
-        best_fit_index = -1
-        min_space_left = capacity + 1
+        space_left = capacity - np.array([bin_p.sum() for bin_p in bins])
+        valid_bins = space_left[space_left >= item]
 
-        for i, bin_p in enumerate(bins):
-            space_left = capacity - sum(bin_p)
-            if item <= space_left and (space_left - item) < min_space_left:
-                best_fit_index = i
-                min_space_left = space_left - item
-
-        if best_fit_index != -1:
-            bins[best_fit_index].append(item)
+        if valid_bins.size > 0:
+            best_fit_index = np.argmin(valid_bins - item)
+            bins[best_fit_index] = np.append(bins[best_fit_index], item)
         else:
-            bins.append([item])
+            bins.append(np.array([item]))
 
     return bins
