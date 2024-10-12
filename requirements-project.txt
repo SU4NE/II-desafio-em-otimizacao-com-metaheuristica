@@ -1,2 +1,0 @@
-# Unified Python packaging
-uv==0.4.18

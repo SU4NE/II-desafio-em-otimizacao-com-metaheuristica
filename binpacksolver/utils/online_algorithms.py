@@ -56,7 +56,7 @@ def first_fit_decreasing(items: np.ndarray, capacity: int) -> List[np.ndarray]:
         A list of bins where each bin is a list of items.
     """
     sorted_items = sorted(items, reverse=True)
-    return best_fit_decreasing(sorted_items, capacity, [[]])
+    return first_fit(sorted_items, capacity, [[]])
 
 
 def best_fit_decreasing(

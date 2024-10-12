@@ -8,7 +8,8 @@
 *.sqlite3
 *.pkl
 *.h5 
-*.so
+*.so 
+*.lock
 
 # Ignore Python-related files
 *.pyc
@@ -37,9 +38,10 @@ CMakeFiles/
 *.sublime-workspace
 
 # Ignore files within directories
-data/*
+target/
 log/*
 !log/.gitkeep
+data/*
 !data/.gitkeep
 !data/trained_model/
 tests/*
