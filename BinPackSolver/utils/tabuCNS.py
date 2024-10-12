@@ -1,12 +1,13 @@
 import time
 import math
+import numpy as np
 
 class TabuCNS:
-    def __init__(self, init_solution, capacity, lixo, max_iteration = 100, time_limit=1):
+    def __init__(self, init_solution, capacity, lixo, max_iteration=100, time_limit=1):
         self.best_solution = init_solution
-        self.current_solution = init_solution.copy()
+        self.current_solution = init_solution
         self.capacity = capacity
-        self.lixo = lixo
+        self.lixo = np.array(lixo)
         self.time_limit = time_limit
         self.tabu_list = {}
         self.max_iteration = max_iteration
@@ -24,20 +25,28 @@ class TabuCNS:
                     if not self.is_tabu(item_set_s, bin_):
                         for item_set_t in self.lixo:
                             menor, move_value = self.feasible(item_set_s, item_set_t, bin_)
-                            if menor and move_value > best_move_value:  
+                            if menor and move_value > best_move_value:
                                 best_move = (item_set_s, item_set_t, bin_)
                                 best_move_value = move_value
 
             if best_move is None:
                 break
 
-            for bin_ in self.current_solution:
+            for idx, bin_ in enumerate(self.current_solution):
                 if best_move[0] in bin_:
-                    bin_.remove(best_move[0])
-                    bin_.append(best_move[1])
+
+                    item_index = np.where(bin_ == best_move[0])[0][0]
+                    bin_ = np.delete(bin_, item_index)
+                    
+                    bin_ = np.append(bin_, best_move[1])
+                    self.current_solution[idx] = bin_
                     break
-            self.lixo.remove(best_move[1])
-            self.lixo.append(best_move[0])
+
+
+            lixo_index = np.where(self.lixo == best_move[1])[0][0]
+            self.lixo = np.delete(self.lixo, lixo_index)
+
+            self.lixo = np.append(self.lixo, best_move[0])
 
             if self.evaluate(self.current_solution) < self.evaluate(self.best_solution):
                 self.best_solution = [bin_.copy() for bin_ in self.current_solution]
