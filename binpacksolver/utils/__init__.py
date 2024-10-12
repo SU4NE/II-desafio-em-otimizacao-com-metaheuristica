@@ -1,5 +1,4 @@
-from tabu_structure import TabuStructure
-
+from .old_tabu_structure import TabuStructure
 from .online_algorithms import (best_fit_decreasing, first_fit,
                                 first_fit_decreasing)
 from .operations import (container_change, container_concatenate,
@@ -7,6 +6,7 @@ from .operations import (container_change, container_concatenate,
 from .support_functions import (find_best_solution, fitness,
                                 generate_container, generate_solution,
                                 theoretical_minimum, tournament_roulette)
+from .tabu_cns import TabuCNS
 from .utils import check_end, has_common_elements, merge_np
 
 __all__ = [
