@@ -7,7 +7,7 @@ from typing import List
 import numpy as np
 
 
-def best_fit_decreasing(
+def first_fit(
     items: np.ndarray, capacity: int, bins: List[np.ndarray]
 ) -> List[np.ndarray]:
     """
