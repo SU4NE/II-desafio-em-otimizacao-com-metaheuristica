@@ -11,7 +11,7 @@ import numpy as np
 
 from binpacksolver.utils import (TabuStructure, check_end, generate_container,
                                  generate_solution, merge_np,
-                                 theoretical_minimum)
+                                 theoretical_minimum, valid_solution)
 
 
 def __pack_items(
@@ -35,20 +35,7 @@ def __pack_items(
         A tuple containing the updated bin and the remaining unplaced items.
     """
     combined_items = merge_np(np.concatenate(unplaced_items), bin_items)
-    remaining_items = []
-    used_capacity = 0
-    remaining_items.append([])
-
-    for item in combined_items:
-        if used_capacity + item <= c:
-            remaining_items[-1].append(item)
-            used_capacity += item
-        else:
-            remaining_items[-1] = np.array(remaining_items[-1], dtype=int)
-            used_capacity = item
-            remaining_items.append([item])
-
-    remaining_items[-1] = np.array(remaining_items[-1], dtype=int)
+    remaining_items = valid_solution(combined_items, c)
     return remaining_items[-1], remaining_items[:-1] if len(remaining_items) > 1 else []
 
 

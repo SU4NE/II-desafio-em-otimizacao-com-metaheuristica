@@ -7,7 +7,7 @@ fitness based on a given array of values.
 
 import math
 import random
-from typing import List, Tuple
+from typing import List, Tuple, Any, Union
 
 import numpy as np
 
@@ -16,19 +16,22 @@ from .online_algorithms import (best_fit_decreasing, first_fit,
 
 
 def generate_container(solution: List[np.ndarray], c: int) -> List[int]:
-    """_summary_
+    """
+    Generates a list of remaining capacities for each bin in the solution.
 
     Parameters
     ----------
     solution : List[np.ndarray]
-        _description_
+        A list of numpy arrays, where each array represents a bin containing 
+        items with their respective sizes.
     c : int
-        _description_
+        The maximum capacity of each bin.
 
     Returns
     -------
     List[int]
-        _description_
+        A list of remaining capacities for each bin, after subtracting the 
+        total size of items already packed in each bin.
     """
     containers = [c] * len(solution)
     for index, value in enumerate(solution):
@@ -40,11 +43,16 @@ def generate_solution(
     solution: np.ndarray, c: int, **kwargs
 ) -> Tuple[List[np.ndarray], List[int]]:
     """
-    Generates a modified solution array based on the given parameters.
+    Generates a modified solution based on heuristics or sorting methods.
 
-    If the 'FFD', 'BFD', or 'FF' keyword argument is provided and set to True,
-    the function can implement heuristics such as First-Fit Decreasing (FFD),
-    Best-Fit Decreasing (BFD), or First-Fit (FF) to prioritize the best solutions.
+    The function applies different heuristics based on keyword arguments:
+    - First-Fit Decreasing (FFD)
+    - Best-Fit Decreasing (BFD)
+    - First-Fit (FF)
+    - VALID (simple one-item-per-bin initialization)
+
+    If no heuristic is specified, it sorts the solution in descending order 
+    and packs items into bins.
 
     Parameters
     ----------
@@ -72,14 +80,56 @@ def generate_solution(
         solution = first_fit(solution, c, [])
         return solution, generate_container(solution, c)
 
+    if kwargs.get("VALID", False):
+        solution = valid_solution(solution, c)
+        return solution, generate_container(solution, c)
+        
     solution = np.sort(solution)[::-1]
     solution = [np.array([elemento], dtype=int) for elemento in solution]
-    containers = generate_container(solution, c)
-
-    return solution, containers
+    return solution, generate_container(solution, c)
 
 
-def fitness(solution: List[np.ndarray]) -> int:
+def generate_initial_population(solution: np.ndarray, c: int, population: int, juice: bool = False, **kwargs) -> Tuple[List[List[np.ndarray]], List[List[int]]]:
+    """
+    Generates an initial population for the bin packing problem.
+
+    Parameters
+    ----------
+    solution : np.ndarray
+        Initial solution representing the items to be packed.
+    c : int
+        Bin capacity.
+    population : int
+        Number of individuals in the population.
+    juice: bool
+        If any individual is going to use BFD.
+
+    Returns
+    -------
+    Tuple[List[List[np.ndarray]], List[List[int]]]
+        A tuple with the generated bins and container capacities for 
+        each individual in the population.
+    """
+    valid = kwargs.get("VALID", False)
+    pop_bins = [None] * population
+    pop_containers = [None] * population
+    
+    for i in range(population):
+        if valid:
+            pop_bins[i], _ = generate_solution(solution, c, VALID=True)
+            random.shuffle(solution)
+        else:
+            pop_bins[i], _ = generate_solution(solution, c)
+        pop_containers[i] = generate_container(pop_bins, c)
+        
+    if juice:
+        pop_bins[-1], _ = generate_solution(solution, c, BFD=True)
+        pop_containers[-1] = generate_container(pop_bins, c)
+        
+    return pop_bins, pop_containers
+        
+
+def fitness(solution: Union[List[np.ndarray], np.ndarray], c: int = -1) -> int:
     """
     calculates the fitness of the given solution.
 
@@ -95,6 +145,20 @@ def fitness(solution: List[np.ndarray]) -> int:
     int
         The fitness score, defined as the number of elements in the solution.
     """
+    if isinstance(solution, np.ndarray):
+        if c == -1:
+            raise ValueError(F"To calculate fitness using np.ndarray capacity cannot be -1")
+        cum_sum = np.cumsum(solution)
+        count = 0
+        prev_sum = 0
+        for idx, sum in enumerate(cum_sum):
+            if sum - prev_sum > c:
+                prev_sum = sum - solution[idx]
+                count += 1
+        if prev_sum:
+            count +=1 
+        return count
+        
     return len(solution)
 
 
@@ -184,4 +248,111 @@ def evaluate_solution(containers: List[int]) -> bool:
     bool
         If all containers are valid it returns true otherwise false
     """
-    return all(bin > -1 for bin in containers)
+    return all(bin_ > -1 for bin_ in containers)
+
+
+def bw_population(population: List[List[np.ndarray]], n: int = None , **kwargs) -> Tuple[Any, Any]:
+    """
+    Finds the indices of the best and worst fitness in the population.
+
+    Parameters
+    ----------
+    population : List[List[np.ndarray]]
+        A list of individuals (bins) in the population, where each individual 
+        is a list of numpy arrays representing bins with items.
+    n : int, optional
+        The number of individuals to consider in the population. 
+        If None, it considers the entire population, by default None.
+
+    Returns
+    -------
+    Tuple[int, int]
+        A tuple containing the index of the individual with the best fitness
+        and the index of the individual with the worst fitness in the population.
+    """   
+    if not n:
+        n = len(population)
+    list_all = kwargs.get("list_all", False)
+    if list_all:
+        best = (float("inf"), [])
+        worst = []
+        for idx in range(n):
+            fit = fitness(population[idx])
+            if fit <= best[0]:
+                if fit < best[0]:
+                    worst.extend(best[1])
+                    best = (fit ,[idx])
+                else:
+                    best[1].append(idx)
+            else:
+                worst.append(idx)
+
+        return best[1], worst
+        
+    best = (float("inf"), 0)
+    worst = (float("-inf"), 0)
+    for idx in range(n):
+        fit = fitness(population[idx])
+        if fit < best[0]:
+            best = (fit, idx)
+        if fit > worst[0]:
+            worst = (fit, idx)
+            
+    return best[1], worst[1]
+
+def bestfit_population(population: Union[List[List[np.ndarray]], np.ndarray], c: int = -1) -> int:
+    """
+    Finds the best (minimum) fitness in the population.
+
+    Parameters
+    ----------
+    population : Union[List[List[np.ndarray]], np.ndarray]
+        A population of individuals, where each individual can be represented as:
+        - A list of numpy arrays (bins) in the case of a List[List[np.ndarray]].
+        - A 2D numpy array where each row represents an individual in the case of a numpy array.
+    c : int, optional
+        The bin capacity, required if population is a numpy array and used with 
+        `generate_solution`, by default -1.
+
+    Returns
+    -------
+    int
+        The minimum fitness value across the population.
+    """  
+    if isinstance(population, np.ndarray):
+        return min(fitness(population[i, :], c) for i in range(population.shape[0]))
+    return min(fitness(bins) for bins in population)
+
+def valid_solution(solution: np.ndarray, c: int) -> List[np.ndarray]: 
+    """
+    Validates a bin packing solution by organizing items into bins without 
+    exceeding the bin capacity.
+
+    Parameters
+    ----------
+    solution : np.ndarray
+        Array of items to be packed into bins.
+    c : int
+        Capacity of each bin.
+
+    Returns
+    -------
+    List[np.ndarray]
+        A list of bins, where each bin is a numpy array of items, ensuring that 
+        the total weight of items in each bin does not exceed the given capacity.
+    """  
+    remaining_items = []
+    used_capacity = 0
+    remaining_items.append([])
+
+    for item in solution:
+        if used_capacity + item <= c:
+            remaining_items[-1].append(item)
+            used_capacity += item
+        else:
+            remaining_items[-1] = np.array(remaining_items[-1], dtype=int)
+            used_capacity = item
+            remaining_items.append([item])
+
+    remaining_items[-1] = np.array(remaining_items[-1], dtype=int)
+    return remaining_items

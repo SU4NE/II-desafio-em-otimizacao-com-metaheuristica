@@ -6,7 +6,7 @@ from .operations import (container_change, container_concatenate,
                          container_insert)
 from .support_functions import (evaluate_solution, find_best_solution, fitness,
                                 generate_container, generate_solution,
-                                theoretical_minimum, tournament_roulette)
+                                theoretical_minimum, tournament_roulette, generate_initial_population, bw_population, bestfit_population, valid_solution)
 from .tabu_cns import TabuCNS
 from .utils import check_end, has_common_elements, merge_np
 
@@ -19,10 +19,14 @@ __all__ = [
     "theoretical_minimum",
     "evaluate_solution",
     "find_best_solution",
+    "generate_initial_population",
     "tournament_roulette",
     "container_change",
     "container_concatenate",
+    "valid_solution",
     "container_insert",
+    "bestfit_population",
+    "bw_population",
     "check_end",
     "merge_np",
     "has_common_elements",
