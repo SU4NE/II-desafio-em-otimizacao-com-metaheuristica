@@ -1,4 +1,5 @@
-from .old_tabu_structure import TabuStructure
+from tabu_structure import TabuStructure
+
 from .online_algorithms import (best_fit_decreasing, first_fit,
                                 first_fit_decreasing)
 from .operations import (container_change, container_concatenate,

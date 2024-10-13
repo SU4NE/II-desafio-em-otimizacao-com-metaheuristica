@@ -1,6 +1,5 @@
-from binpacksolver.heuristic.cns_bp import CNSBinPacking
-
 from .abc import artificial_bee_colony
+from .cns import consistent_neighborhood_search
 from .ggacgt import genetic_algorithm_cgt
 from .tabusearch import tabu_search
 
