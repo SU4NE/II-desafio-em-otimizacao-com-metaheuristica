@@ -1,7 +1,10 @@
 """
-Module for implementing the Tabu Search algorithm for optimization problems.
+Module for implementing the Simulated Annealing algorithm for the Bin Packing Problem (BPP).
+The algorithm tries to optimize the packing of items into bins by simulating the process of
+annealing in metals, where temperature is gradually reduced.
 """
 
+import random
 import time
 from typing import List, Tuple
 
@@ -13,42 +16,45 @@ from binpacksolver.utils import (check_end, evaluate_solution, fitness,
 
 def __perturb_solution(
     best_fit: int, solution: List[np.ndarray], containers: List[int], c: int
-):
-    """_summary_
+) -> Tuple[List[np.ndarray], List[int]]:
+    """
+    Perturbs the current solution by randomly moving an item from one bin to another.
 
     Parameters
     ----------
     best_fit : int
-        _description_
-    solution : np.ndarray
-        _description_
+        Current best fitness value.
+    solution : List[np.ndarray]
+        List of bins containing items.
     containers : List[int]
-        _description_
+        List of current capacities of the bins.
     c : int
-        _description_
+        Capacity of the bins.
 
     Returns
     -------
-    _type_
-        _description_
+    Tuple[List[np.ndarray], List[int]]
+        The perturbed solution and updated container capacities.
     """
     if best_fit < 2:
         return solution
 
     new_solution = solution.copy()
     new_containers = containers.copy()
-
-    source_bin_idx = np.random.randint(best_fit)
-    item_to_move = np.random.randint(0, fitness(new_solution[source_bin_idx]))
-    item = new_solution[item_to_move]
-    new_solution[source_bin_idx] = np.delete(new_solution[source_bin_idx], item_to_move)
-    new_containers[source_bin_idx] -= item
+    source_bin_idx = random.randint(0, best_fit - 1)
+    item_to_move = random.randint(0, fitness(new_solution[source_bin_idx]) - 1)
+    item = new_solution[source_bin_idx][item_to_move]
+    new_containers[source_bin_idx] += item
 
     if new_containers[source_bin_idx] == c:
         del new_solution[source_bin_idx]
         del new_containers[source_bin_idx]
+    else:
+        new_solution[source_bin_idx] = np.delete(
+            new_solution[source_bin_idx], item_to_move
+        )
 
-    destination_bin_idx = np.random.randint(fitness(new_solution) + 1)
+    destination_bin_idx = random.randint(0, fitness(new_solution))
     if destination_bin_idx == len(new_solution):
         new_solution.append(np.array([item], dtype=int))
         new_containers.append(c - item)
@@ -57,6 +63,14 @@ def __perturb_solution(
             new_solution[destination_bin_idx], item
         )
         new_containers[destination_bin_idx] -= item
+        if new_containers[destination_bin_idx] < 0:
+            new_bin, new_container = generate_solution(
+                new_solution[destination_bin_idx], c, BFD=True
+            )
+            del new_containers[destination_bin_idx]
+            del new_solution[destination_bin_idx]
+            new_solution.extend(new_bin)
+            new_containers.extend(new_container)
 
     return new_solution, new_containers
 
@@ -68,6 +82,7 @@ def __accept_solution(new_fitness: int, best_fit: int, temperature: float):
         else np.random.random() < np.exp((best_fit - new_fitness) / temperature)
     )
 
+
 # pylint: disable=R0913
 def __operations(
     best_fit: int,
@@ -76,24 +91,29 @@ def __operations(
     c: int,
     temperature: float,
     iterations_temperature: int,
-):
-    """_summary_
+) -> Tuple[List[np.ndarray], List[int], int]:
+    """
+    Perform operations for one temperature level.
 
     Parameters
     ----------
     best_fit : int
-        _description_
+        Fitness of the current best solution.
     solution : List[np.ndarray]
-        _description_
+        Current solution being optimized.
     containers : List[int]
-        _description_
+        List of containers for the items.
     c : int
-        _description_
+        Bin capacity.
+    temperature : float
+        Current temperature of simulated annealing.
+    iterations_temperature : int
+        Number of iterations to perform at the current temperature.
 
     Returns
     -------
-    _type_
-        _description_
+    Tuple[List[np.ndarray], List[int], int]
+        The updated solution, containers, and best fitness.
     """
     for _ in range(iterations_temperature):
         new_solution, new_containers = __perturb_solution(
@@ -107,31 +127,37 @@ def __operations(
             containers = new_containers
             best_fit = new_fitness
 
+    return solution, containers, best_fit
 
-def simulated_annealing_bpp(
+
+def simulated_annealing(
     array_base: np.ndarray,
     c: int,
     time_max: float = 60,
-    min_temperature: float = 0.01,
+    min_temperature: float = 1e-9,
     alpha: float = 0.9,
     iterations_per_temperature: int = 100,
-    initial_temperature: float = 0.01,
+    initial_temperature: float = 1e9,
 ) -> Tuple[List[np.ndarray], int]:
     """
-    Executes the Tabu Search algorithm for bin packing.
+    Execute the Simulated Annealing algorithm for the Bin Packing Problem.
 
     Parameters
     ----------
     array_base : np.ndarray
-        The base array representing items to pack.
+        Array of items to pack.
     c : int
-        The capacity of the bins or containers.
+        Capacity of the bins.
     time_max : float, optional
         Maximum allowable time for the search, by default 60.
-    max_it : int, optional
-        Maximum number of iterations allowed, by default None.
-    alpha : int, optional
-        Parameter affecting tabu structure size, by default 4.
+    min_temperature : float, optional
+        Minimum temperature before stopping, by default 1e-9.
+    alpha : float, optional
+        Cooling rate, by default 0.9.
+    iterations_per_temperature : int, optional
+        Number of iterations per temperature level, by default 100.
+    initial_temperature : float, optional
+        Starting temperature, by default 1e9.
 
     Returns
     -------
@@ -141,8 +167,8 @@ def simulated_annealing_bpp(
     solution: np.ndarray = array_base.copy()
     solution, containers = generate_solution(solution, c)
     th_min: int = theoretical_minimum(array_base, c)
+    best_solution = solution
     best_fit: int = fitness(solution)
-    it = 0
     temperature: float = initial_temperature
     time_start: float = time.time()
 
@@ -155,12 +181,15 @@ def simulated_annealing_bpp(
         temperature,
         min_temperature,
     ):
-        __operations(
+        solution, containers, best_fit = __operations(
             best_fit, solution, containers, c, temperature, iterations_per_temperature
         )
-        it = it + it * alpha
 
-    return solution, best_fit
+        if best_fit < fitness(best_solution):
+            best_solution = solution.copy()
+        temperature *= alpha
+
+    return best_solution, fitness(best_solution)
 
 
 # pylint: enable=R0913

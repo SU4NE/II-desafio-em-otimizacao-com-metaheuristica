@@ -1,3 +1,8 @@
+"""
+Module for implementing Consistent Neighborhood Search (CNS)
+and Tabu Search algorithms for bin packing optimization problems.
+"""
+
 import random
 import time
 from typing import List, Tuple
@@ -262,7 +267,6 @@ def __operations(
         Updated solution and remaining unplaced items after applying operations.
     """
     it = 0
-    print(len(partial_solution))
     start = time.time()
     while check_end(
         partial_sum,
@@ -281,8 +285,6 @@ def __operations(
         partial_solution, unplaced_items = __descent(
             partial_solution, unplaced_items, c, max_attempts=min(max_attempts, 100)
         )
-        partial_sum = sum(box.sum() for box in partial_solution)
-    print(len(partial_solution), unplaced_items)
     return partial_solution, unplaced_items
 
 
