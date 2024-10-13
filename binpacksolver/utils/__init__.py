@@ -7,10 +7,12 @@ from .operations import (container_change, container_concatenate,
 from .support_functions import (find_best_solution, fitness,
                                 generate_container, generate_solution,
                                 theoretical_minimum, tournament_roulette)
+from .tabu_cns import TabuCNS
 from .utils import check_end, has_common_elements, merge_np
 
 __all__ = [
     "TabuStructure",
+    "TabuCNS",
     "generate_container",
     "generate_solution",
     "fitness",

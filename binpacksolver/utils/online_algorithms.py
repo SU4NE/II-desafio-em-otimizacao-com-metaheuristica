@@ -28,13 +28,13 @@ def first_fit(
         A list of bins where each bin is a list of items.
     """
     for item in items:
-        current_fill = np.array([np.sum(bin_p) for bin_p in bins])
+        current_fill = np.array([np.sum(bin_p) for bin_p in bins], dtype=int)
         available_bins = np.where(current_fill + item <= capacity)[0]
 
         if available_bins.size > 0:
             bins[available_bins[0]] = np.append(bins[available_bins[0]], item)
         else:
-            bins.append(np.array([item]))
+            bins.append(np.array([item], dtype=int))
 
     return bins
 
@@ -55,7 +55,7 @@ def first_fit_decreasing(items: np.ndarray, capacity: int) -> List[np.ndarray]:
     List[np.ndarray]
         A list of bins where each bin is a list of items.
     """
-    sorted_items = sorted(items, reverse=True)
+    sorted_items = np.sort(items)[::-1]
     return first_fit(sorted_items, capacity, [[]])
 
 
