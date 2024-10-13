@@ -38,7 +38,7 @@ def generate_container(solution: List[np.ndarray], c: int) -> List[int]:
 
 def generate_solution(
     solution: np.ndarray, c: int, **kwargs
-) -> Tuple[np.ndarray, List]:
+) -> Tuple[List[np.ndarray], List[int]]:
     """
     Generates a modified solution array based on the given parameters.
 
@@ -55,7 +55,7 @@ def generate_solution(
 
     Returns
     -------
-    np.ndarray
+    List[np.ndarray]
         A new solution array, sorted in descending order.
     List[int]
         A list representing the remaining space in each container.
@@ -168,3 +168,20 @@ def find_best_solution(solutions):
     """
     solutions = sorted(solutions, key=fitness, reverse=True)
     return solutions[0]
+
+
+def evaluate_solution(containers: List[int]) -> bool:
+    """
+    Evaluate the containers
+
+    Parameters
+    ----------
+    containers : List[int]
+        A list representing the remaining space in each container.
+
+    Returns
+    -------
+    bool
+        If all containers are valid it returns true otherwise false
+    """
+    return all(bin > -1 for bin in containers)
