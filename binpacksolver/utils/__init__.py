@@ -6,7 +6,8 @@ from .operations import (container_change, container_concatenate,
                          container_insert)
 from .support_functions import (find_best_solution, fitness,
                                 generate_container, generate_solution,
-                                theoretical_minimum, tournament_roulette)
+                                theoretical_minimum, tournament_roulette,
+                                evaluate_solution)
 from .utils import check_end, has_common_elements, merge_np
 
 __all__ = [
@@ -15,6 +16,7 @@ __all__ = [
     "generate_solution",
     "fitness",
     "theoretical_minimum",
+    "evaluate_solution",
     "find_best_solution",
     "tournament_roulette",
     "container_change",
