@@ -183,5 +183,5 @@ def evaluate_solution(containers: List[int]) -> bool:
     -------
     bool
         If all containers are valid it returns true otherwise false
-    """    
+    """
     return all(bin > -1 for bin in containers)

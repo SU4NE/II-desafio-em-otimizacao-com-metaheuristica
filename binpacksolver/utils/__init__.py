@@ -4,10 +4,9 @@ from .online_algorithms import (best_fit_decreasing, first_fit,
                                 first_fit_decreasing)
 from .operations import (container_change, container_concatenate,
                          container_insert)
-from .support_functions import (find_best_solution, fitness,
+from .support_functions import (evaluate_solution, find_best_solution, fitness,
                                 generate_container, generate_solution,
-                                theoretical_minimum, tournament_roulette,
-                                evaluate_solution)
+                                theoretical_minimum, tournament_roulette)
 from .utils import check_end, has_common_elements, merge_np
 
 __all__ = [
