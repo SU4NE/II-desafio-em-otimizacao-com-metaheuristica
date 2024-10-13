@@ -1,5 +1,6 @@
-from tabu_structure import TabuStructure
+from old_tabu_structure import TabuStructure
 
+from .core import core_refurbishment, enrichment, fission, fusion
 from .online_algorithms import (best_fit_decreasing, first_fit,
                                 first_fit_decreasing)
 from .operations import (container_change, container_concatenate,
@@ -28,4 +29,8 @@ __all__ = [
     "first_fit",
     "first_fit_decreasing",
     "best_fit_decreasing",
+    "fusion",
+    "fission",
+    "enrichment",
+    "core_refurbishment",
 ]
