@@ -209,8 +209,8 @@ def artificial_bee_colony(
         Best solution found and its fitness value.
     """
     solution: np.ndarray = array_base.copy()
-    best_fit: int = fitness(solution)
     base_solution, _ = generate_solution(solution, c)
+    best_fit: int = fitness(base_solution)
     bees = __generate_bees_solution(base_solution.copy(), c, employed)
     th_min: int = theoretical_minimum(array_base, c)
     it: int = 0

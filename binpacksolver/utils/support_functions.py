@@ -120,44 +120,49 @@ def generate_initial_population(solution: np.ndarray, c: int, population: int, j
             random.shuffle(solution)
         else:
             pop_bins[i], _ = generate_solution(solution, c)
-        pop_containers[i] = generate_container(pop_bins, c)
+        pop_containers[i] = generate_container(pop_bins[i], c)
         
     if juice:
         pop_bins[-1], _ = generate_solution(solution, c, BFD=True)
-        pop_containers[-1] = generate_container(pop_bins, c)
+        pop_containers[-1] = generate_container(pop_bins[-1], c)
         
     return pop_bins, pop_containers
         
 
 def fitness(solution: Union[List[np.ndarray], np.ndarray], c: int = -1) -> int:
     """
-    calculates the fitness of the given solution.
+    Calculates the fitness of the given solution.
 
-    The fitness is defined as the length of the solution array.
+    The fitness is defined as the number of bins required to pack the items 
+    without exceeding the bin capacity `c`. For lists of arrays, it simply 
+    returns the length of the list (number of bins).
 
     Parameters
     ----------
-    solution : List[np.ndarray]
-        An array representing the current solution.
+    solution : Union[List[np.ndarray], np.ndarray]
+        The current solution, either as a list of numpy arrays (bins) or a 
+        1D numpy array of items.
+    c : int, optional
+        Capacity of each bin. Required when the solution is a numpy array. 
+        Default is -1.
 
     Returns
     -------
     int
-        The fitness score, defined as the number of elements in the solution.
+        The fitness score, defined as the number of bins required.
     """
     if isinstance(solution, np.ndarray):
         if c == -1:
             raise ValueError(F"To calculate fitness using np.ndarray capacity cannot be -1")
-        cum_sum = np.cumsum(solution)
+        cum_sum = 0
         count = 0
-        prev_sum = 0
-        for idx, sum in enumerate(cum_sum):
-            if sum - prev_sum > c:
-                prev_sum = sum - solution[idx]
+        for item in solution:
+            if cum_sum + item > c:
                 count += 1
-        if prev_sum:
-            count +=1 
-        return count
+                cum_sum = item
+            else:
+                cum_sum += item
+        return count + 1 if cum_sum else 0
         
     return len(solution)
 
@@ -251,28 +256,60 @@ def evaluate_solution(containers: List[int]) -> bool:
     return all(bin_ > -1 for bin_ in containers)
 
 
-def bw_population(population: List[List[np.ndarray]], n: int = None , **kwargs) -> Tuple[Any, Any]:
+def bw_population(population: Union[List[List[np.ndarray]], np.ndarray], n: int = None, **kwargs) -> Tuple[Any, Any]:
     """
     Finds the indices of the best and worst fitness in the population.
 
     Parameters
     ----------
-    population : List[List[np.ndarray]]
+    population : Union[List[List[np.ndarray]], np.ndarray]
         A list of individuals (bins) in the population, where each individual 
-        is a list of numpy arrays representing bins with items.
+        is a list of numpy arrays representing bins with items, or a 2D numpy array.
     n : int, optional
         The number of individuals to consider in the population. 
         If None, it considers the entire population, by default None.
 
     Returns
     -------
-    Tuple[int, int]
+    Tuple[Any, Any]
         A tuple containing the index of the individual with the best fitness
         and the index of the individual with the worst fitness in the population.
     """   
     if not n:
-        n = len(population)
+        if isinstance(population, np.ndarray):
+            n = population.shape[0]
+        else:
+            n = len(population)
+    
     list_all = kwargs.get("list_all", False)
+    c = kwargs.get("C", -1)
+
+    if isinstance(population, np.ndarray):
+        if list_all:
+            best = (float("inf"), [])
+            worst = []
+            for idx in range(n):
+                fit = fitness(population[idx, :], c)
+                if fit <= best[0]:
+                    if fit < best[0]:
+                        worst.extend(best[1])
+                        best = (fit, [idx])
+                    else:
+                        best[1].append(idx)
+                else:
+                    worst.append(idx)
+            return best[1], worst
+        else:
+            best = (float("inf"), 0)
+            worst = (float("-inf"), 0)
+            for idx in range(n):
+                fit = fitness(population[idx, :], c)
+                if fit < best[0]:
+                    best = (fit, idx)
+                if fit > worst[0]:
+                    worst = (fit, idx)
+            return best[1], worst[1]
+    
     if list_all:
         best = (float("inf"), [])
         worst = []
@@ -281,14 +318,13 @@ def bw_population(population: List[List[np.ndarray]], n: int = None , **kwargs) 
             if fit <= best[0]:
                 if fit < best[0]:
                     worst.extend(best[1])
-                    best = (fit ,[idx])
+                    best = (fit, [idx])
                 else:
                     best[1].append(idx)
             else:
                 worst.append(idx)
-
         return best[1], worst
-        
+
     best = (float("inf"), 0)
     worst = (float("-inf"), 0)
     for idx in range(n):
@@ -297,7 +333,7 @@ def bw_population(population: List[List[np.ndarray]], n: int = None , **kwargs) 
             best = (fit, idx)
         if fit > worst[0]:
             worst = (fit, idx)
-            
+    
     return best[1], worst[1]
 
 def bestfit_population(population: Union[List[List[np.ndarray]], np.ndarray], c: int = -1) -> int:
