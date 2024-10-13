@@ -10,7 +10,7 @@ from .utils import merge_np
 
 
 def container_concatenate(
-    a: int, b: int, containers: List[int], solution: np.ndarray
+    a: int, b: int, containers: List[int], solution: List[np.ndarray]
 ) -> np.ndarray:
     """
     Concatenates items from container b into container a.
