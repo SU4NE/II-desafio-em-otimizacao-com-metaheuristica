@@ -11,10 +11,11 @@ from typing import List, Tuple
 
 import numpy as np
 
-from binpacksolver.utils import (bestfit_population, repair_solution,
-                                 check_end, fitness,
+from binpacksolver.utils import (check_end, fitness,
                                  generate_initial_population,
-                                 generate_solution, theoretical_minimum)
+                                 generate_solution, repair_solution,
+                                 theoretical_minimum)
+
 
 # pylint: disable=R0914
 def jaya_optimization(

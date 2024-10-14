@@ -5,13 +5,17 @@ moving objects between them using White Hole, Black Hole, and Wormhole mechanism
 The goal is to iteratively improve a population of solutions (universes) 
 to achieve the best packing solution, minimizing the number of bins used.
 """
-import numpy as np
+
 import random
-from typing import List, Tuple
 import time
-from binpacksolver.utils import (check_end, fitness, repair_solution,
+from typing import List, Tuple
+
+import numpy as np
+
+from binpacksolver.utils import (check_end, fitness,
                                  generate_initial_population,
-                                 generate_solution, theoretical_minimum)
+                                 generate_solution, repair_solution,
+                                 theoretical_minimum)
 
 
 def roulette_wheel_selection(inflation_rates: np.ndarray) -> int:
@@ -34,16 +38,17 @@ def roulette_wheel_selection(inflation_rates: np.ndarray) -> int:
     return chosen_index
 
 
+# pylint: disable=R0913, R0914
 def update_universe(
     universe: np.ndarray,
     population: np.ndarray,
     normalized_fitness: np.ndarray,
     best_universe: np.ndarray,
-    WEP: float,
-    TDR: float,
+    wep: float,
+    tdr: float,
     min_value: int,
     max_value: int,
-    c: int
+    c: int,
 ) -> np.ndarray:
     """
     Updates the current universe using the White Hole, Black Hole, and Wormhole mechanisms.
@@ -58,9 +63,9 @@ def update_universe(
         The normalized fitness values (inflation rates).
     best_universe : np.ndarray
         The best universe/solution found so far.
-    WEP : float
+    wep : float
         Wormhole Existence Probability.
-    TDR : float
+    tdr : float
         Traveling Distance Rate.
     min_value : int
         Minimum value for an item.
@@ -83,14 +88,18 @@ def update_universe(
         if r1 < normalized_fitness[white_hole_idx]:
             new_universe[j] = population[white_hole_idx, j]
         r2 = random.random()
-        if r2 < WEP:
+        if r2 < wep:
             r3 = random.random()
             if r3 < 0.5:
                 rand_val = random.random()
-                new_universe[j] = best_universe[j] + TDR * ((max_value - min_value) * rand_val + min_value)
+                new_universe[j] = best_universe[j] + tdr * (
+                    (max_value - min_value) * rand_val + min_value
+                )
             else:
                 rand_val = random.random()
-                new_universe[j] = best_universe[j] - TDR * ((max_value - min_value) * rand_val + min_value)
+                new_universe[j] = best_universe[j] - tdr * (
+                    (max_value - min_value) * rand_val + min_value
+                )
 
     new_universe = np.clip(new_universe, min_value, max_value)
     new_universe = np.round(new_universe).astype(int)
@@ -104,8 +113,8 @@ def multi_verse_optimizer(
     time_max: float = 60,
     max_it: int = None,
     population_size: int = 7,
-    WEP_Max = 1.0,
-    WEP_Min = 0.2
+    wep_max=1.0,
+    wep_min=0.2,
 ) -> Tuple[List[np.ndarray], int]:
     """
     Executes the Multi-Verse Optimizer algorithm for the bin packing problem.
@@ -131,7 +140,7 @@ def multi_verse_optimizer(
     -------
     Tuple[List[np.ndarray], int]
         The best solution found and its fitness (number of bins used).
-        
+
     Notes
     -----
     If the search is limited only by iterations (`max_it`) or if `max_it` is set too small,
@@ -143,19 +152,19 @@ def multi_verse_optimizer(
     max_value = array_base.max()
 
     # Generate initial population
-    pop_bins, _ = generate_initial_population(
+    universes, _ = generate_initial_population(
         array_base, c, population_size, juice=False, VALID=True
     )
 
     # Flatten the population and combine with fitness values
-    fitness_values = np.array([fitness(lst) for lst in pop_bins])
-    pop_bins_flat = np.vstack([np.concatenate(lst) for lst in pop_bins]).astype(int)
-    pop_matrix = np.hstack((pop_bins_flat, fitness_values[:, np.newaxis])).astype(int)
+    fitness_values = np.array([fitness(lst) for lst in universes])
+    universes_flat = np.vstack([np.concatenate(lst) for lst in universes]).astype(int)
+    uni_matrix = np.hstack((universes_flat, fitness_values[:, np.newaxis])).astype(int)
 
     # Initial variables
-    best_idx = np.argmin(pop_matrix[:, -1])
-    best_universe = np.copy(pop_matrix[best_idx, :-1])
-    best_fitness = pop_matrix[best_idx, -1]
+    best_idx = np.argmin(uni_matrix[:, -1])
+    best_universe = np.copy(uni_matrix[best_idx, :-1])
+    best_fitness = uni_matrix[best_idx, -1]
     th = theoretical_minimum(array_base, c)
     it = 0
     start = time.time()
@@ -164,34 +173,38 @@ def multi_verse_optimizer(
 
     while check_end(th, best_fitness, time_max, start, time.time(), max_it, it):
         it += 1
-        WEP = WEP_Min + it * ((WEP_Max - WEP_Min) / max_iterations)
-        TDR = 1 - (it ** (1 / 6) / max_iterations ** (1 / 6))
-        fitness_inv = 1 / (pop_matrix[:, -1] + 1e-10)
+        wep = wep_min + it * ((wep_max - wep_min) / max_iterations)
+        tdr = 1 - (it ** (1 / 6) / max_iterations ** (1 / 6))
+        fitness_inv = 1 / (uni_matrix[:, -1] + 1e-10)
         norm_fitness = fitness_inv / np.sum(fitness_inv)
 
         for i in range(population_size):
             if i == best_idx:
                 continue
-            pop_matrix[i, :-1] = update_universe(
-                pop_matrix[i, :-1],
-                pop_matrix[:, :-1],
+            uni_matrix[i, :-1] = update_universe(
+                uni_matrix[i, :-1],
+                uni_matrix[:, :-1],
                 norm_fitness,
                 best_universe,
-                WEP,
-                TDR,
+                wep,
+                tdr,
                 min_value,
                 max_value,
-                c
+                c,
             )
 
-        fitness_values = np.apply_along_axis(lambda x: fitness(x, c), 1, pop_matrix[:, :-1])
-        pop_matrix[:, -1] = fitness_values
+        fitness_values = np.apply_along_axis(
+            lambda x: fitness(x, c), 1, uni_matrix[:, :-1]
+        )
+        uni_matrix[:, -1] = fitness_values
 
-        current_best_idx = np.argmin(pop_matrix[:, -1])
-        if pop_matrix[current_best_idx, -1] < best_fitness:
-            best_fitness = pop_matrix[current_best_idx, -1]
-            best_universe = np.copy(pop_matrix[current_best_idx, :-1])
+        current_best_idx = np.argmin(uni_matrix[:, -1])
+        if uni_matrix[current_best_idx, -1] < best_fitness:
+            best_fitness = uni_matrix[current_best_idx, -1]
+            best_universe = np.copy(uni_matrix[current_best_idx, :-1])
             best_idx = current_best_idx
-            
+
     return generate_solution(best_universe, c, VALID=True)[0], best_fitness
 
+
+# pylint: enable=R0913, R0914

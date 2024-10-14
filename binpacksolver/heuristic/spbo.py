@@ -1,31 +1,78 @@
 """
-Module for implementing the Student Psychology Based Optimization (SPBO) algorithm 
-for the Bin Packing Problem (BPP). The algorithm simulates the learning process of students, 
-where each student (solution) improves based on self-learning and interaction with the best-performing 
-students in the population.
+Module for implementing the Student Psychology Based Optimization (SPBO) 
+algorithm for the Bin Packing Problem (BPP). The algorithm simulates the 
+learning process of students, where each student (solution) improves 
+based on self-learning and interaction with the best-performing students 
+in the population.
 """
-import time
-import random
-from typing import List, Tuple
-import numpy as np
-from binpacksolver.utils import (repair_solution,
-                                 check_end, fitness,
-                                 generate_initial_population,
-                                 generate_solution, theoretical_minimum)
 
-# Algoritmo Student Psychology Based Optimization para BPP
-def update_student(solution, best_solution, self_learning_factor, interaction_factor, min_value, max_value):
-    for i in range(len(solution)):
+import random
+import time
+from typing import List, Tuple
+
+import numpy as np
+
+from binpacksolver.utils import (check_end, fitness,
+                                 generate_initial_population,
+                                 generate_solution, repair_solution,
+                                 theoretical_minimum)
+
+
+# pylint: disable=R0913, R0914
+def update_student(
+    solution: np.ndarray,
+    best_solution: np.ndarray,
+    self_learning_factor: float,
+    interaction_factor: float,
+    min_value: int,
+    max_value: int,
+) -> np.ndarray:
+    """
+    Update a student's solution based on self-learning and interaction with
+    the best-performing student.
+
+    Parameters
+    ----------
+    solution : np.ndarray
+        The current solution (student) to be updated.
+    best_solution : np.ndarray
+        The best solution found so far in the population.
+    self_learning_factor : float
+        The probability of self-learning for the student.
+    interaction_factor : float
+        The probability of learning through interaction with the best solution.
+    min_value : int
+        The minimum allowable value for elements of the solution.
+    max_value : int
+        The maximum allowable value for elements of the solution.
+
+    Returns
+    -------
+    np.ndarray
+        The updated solution with values constrained between `min_value`
+        and `max_value`.
+    """
+    n = len(solution)
+    for i in range(n):
         # Self-learning
         if random.random() < self_learning_factor:
             solution[i] = solution[i] + random.uniform(-1, 1) * solution[i]
         # Learning through interaction with the best student
         if random.random() < interaction_factor:
             solution[i] = best_solution[i] + random.uniform(-1, 1) * best_solution[i]
-            
+
     return np.clip(solution, min_value, max_value)
 
-def student_psychology_based_optimization(array_base: np.ndarray, c: int, population_size=7, time_max: float = 60, max_it=None, self_learning_factor=0.3, interaction_factor=0.7) -> Tuple[List[np.ndarray], int]:
+
+def student_psychology_based_optimization(
+    array_base: np.ndarray,
+    c: int,
+    population_size=7,
+    time_max: float = 60,
+    max_it=None,
+    self_learning_factor=0.3,
+    interaction_factor=0.7,
+) -> Tuple[List[np.ndarray], int]:
     """
     Student Psychology Based Optimization (SPBO) algorithm for Bin Packing Problem (BPP).
 
@@ -44,7 +91,8 @@ def student_psychology_based_optimization(array_base: np.ndarray, c: int, popula
     self_learning_factor : float, optional
         Probability that a student (solution) learns by self-learning, by default 0.3.
     interaction_factor : float, optional
-        Probability that a student (solution) learns by interacting with the best solution, by default 0.7.
+        Probability that a student (solution) learns by interacting with the best solution,
+        by default 0.7.
 
     Returns
     -------
@@ -54,19 +102,21 @@ def student_psychology_based_optimization(array_base: np.ndarray, c: int, popula
     min_value = array_base.min()
     max_value = array_base.max()
 
-    pop_bins, _ = generate_initial_population(
+    students, _ = generate_initial_population(
         array_base, c, population_size, juice=False, VALID=True
     )
 
     # Flatten the population and combine with fitness values
-    fitness_values = np.array([fitness(lst) for lst in pop_bins])
-    pop_bins_flat = np.vstack([np.concatenate(lst) for lst in pop_bins]).astype(int)
-    pop_matrix = np.hstack((pop_bins_flat, fitness_values[:, np.newaxis])).astype(int)
-    
+    fitness_values = np.array([fitness(lst) for lst in students])
+    students_flat = np.vstack([np.concatenate(lst) for lst in students]).astype(int)
+    students_matrix = np.hstack((students_flat, fitness_values[:, np.newaxis])).astype(
+        int
+    )
+
     # Identify the best solution in the initial population
-    best_idx = np.argmin(pop_matrix[:, -1])
-    best_solution = pop_matrix[best_idx, :-1]
-    best_fitness = pop_matrix[best_idx, -1]
+    best_idx = np.argmin(students_matrix[:, -1])
+    best_solution = students_matrix[best_idx, :-1]
+    best_fitness = students_matrix[best_idx, -1]
 
     # Initial variables for stopping criteria
     th = theoretical_minimum(array_base, c)
@@ -76,18 +126,32 @@ def student_psychology_based_optimization(array_base: np.ndarray, c: int, popula
     while check_end(th, best_fitness, time_max, start, time.time(), max_it, it):
         for i in range(population_size):
             if i != best_idx:
-                new_solution = update_student(pop_matrix[i, :-1].copy(), best_solution, self_learning_factor, interaction_factor, min_value, max_value)
-                pop_matrix[i, :-1] = repair_solution(pop_matrix[i, :-1].copy(), new_solution, c)
-                
-        fitness_values = np.array([fitness(solution[:-1], c) for solution in pop_matrix])
-        pop_matrix[:, -1] = fitness_values
-        best_idx = np.argmin(pop_matrix[:, -1])
-        best_solution = pop_matrix[best_idx, :-1]
-        best_fitness = pop_matrix[best_idx, -1]
+                new_solution = update_student(
+                    students_matrix[i, :-1].copy(),
+                    best_solution,
+                    self_learning_factor,
+                    interaction_factor,
+                    min_value,
+                    max_value,
+                )
+                students_matrix[i, :-1] = repair_solution(
+                    students_matrix[i, :-1].copy(), new_solution, c
+                )
+
+        fitness_values = np.array(
+            [fitness(solution[:-1], c) for solution in students_matrix]
+        )
+        students_matrix[:, -1] = fitness_values
+        best_idx = np.argmin(students_matrix[:, -1])
+        best_solution = students_matrix[best_idx, :-1]
+        best_fitness = students_matrix[best_idx, -1]
         it += 1
-    
-    best_idx = np.argmin(pop_matrix[:, -1])
+
+    best_idx = np.argmin(students_matrix[:, -1])
     return (
-        generate_solution(pop_matrix[best_idx, :-1], c, VALID=True)[0],
-        pop_matrix[best_idx, -1],
+        generate_solution(students_matrix[best_idx, :-1], c, VALID=True)[0],
+        students_matrix[best_idx, -1],
     )
+
+
+# pylint: enable=R0913, R0914

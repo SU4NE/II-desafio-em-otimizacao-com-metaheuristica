@@ -443,7 +443,7 @@ def repair_solution(
         item for item, count in number_count_dict.items() for _ in range(count)
     ]
     random.shuffle(remaining_values)
-    if len(modify):
+    if len(modify) != 0:
         solution = best_fit_decreasing(
             np.array(remaining_values),
             c,
@@ -451,8 +451,8 @@ def repair_solution(
         )
     else:
         solution = np.random.shuffle(solution)
-    
+
     if isinstance(solution, list):
         return np.concatenate(solution)
-    
-    return np.array(solution) 
+
+    return np.array(solution)

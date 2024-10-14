@@ -8,8 +8,8 @@ from .support_functions import (bestfit_population, bw_population,
                                 evaluate_solution, find_best_solution, fitness,
                                 generate_container,
                                 generate_initial_population, generate_solution,
-                                theoretical_minimum, tournament_roulette,
-                                valid_solution, repair_solution)
+                                repair_solution, theoretical_minimum,
+                                tournament_roulette, valid_solution)
 from .tabu_cns import TabuCNS
 from .utils import check_end, has_common_elements, merge_np
 
@@ -36,5 +36,5 @@ __all__ = [
     "first_fit",
     "first_fit_decreasing",
     "best_fit_decreasing",
-    "repair_solution"
+    "repair_solution",
 ]
