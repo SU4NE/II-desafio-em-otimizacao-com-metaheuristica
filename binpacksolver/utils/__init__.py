@@ -1,4 +1,4 @@
-from old_tabu_structure import TabuStructure
+from tabu_structure import TabuStructure
 
 from .core import core_refurbishment, enrichment, fission, fusion
 from .online_algorithms import (best_fit_decreasing, first_fit,
@@ -8,6 +8,7 @@ from .operations import (container_change, container_concatenate,
 from .support_functions import (bestfit_population, bw_population,
                                 evaluate_solution, find_best_solution, fitness,
                                 generate_container,
+                                generate_initial_matrix_population,
                                 generate_initial_population, generate_solution,
                                 repair_solution, theoretical_minimum,
                                 tournament_roulette, valid_solution)
@@ -21,8 +22,10 @@ __all__ = [
     "bw_population",
     "evaluate_solution",
     "generate_initial_population",
+    "generate_initial_matrix_population",
     "repair_solution",
-    "valid_solution" "generate_container",
+    "valid_solution",
+    "generate_container",
     "generate_solution",
     "fitness",
     "theoretical_minimum",

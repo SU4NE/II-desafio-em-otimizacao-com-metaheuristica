@@ -5,7 +5,7 @@ from .tabusearch import tabu_search
 
 __all__ = [
     "tabu_search",
-    "artificial_bee_colony",
     "genetic_algorithm_cgt",
-    "CNSBinPacking",
+    "consistent_neighborhood_search",
+    "artificial_bee_colony",
 ]

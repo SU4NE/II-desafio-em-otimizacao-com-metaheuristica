@@ -4,7 +4,8 @@ from typing import List, Tuple
 import numpy as np
 
 from binpacksolver.utils import (check_end, core_refurbishment, enrichment,
-                                 fission, fusion, generate_initial_population,
+                                 fission, fusion,
+                                 generate_initial_matrix_population,
                                  theoretical_minimum)
 
 
@@ -37,7 +38,7 @@ def __operations(reactors, elite):
 
 
 def __assemble_reactor(
-    array_base: np.ndarray, c: int, reactor_type: int, population_size: int
+    array_base: np.ndarray, c: int, reactor_type: int, population_size: int, **kwargs
 ) -> List:
     """_summary_
 
@@ -57,8 +58,11 @@ def __assemble_reactor(
     _type_
         _description_
     """
-    particles, _ = generate_initial_population(
-        array_base, c, population_size, juice=False, VALID=True
+    valid = kwargs.get("VALID", False)
+    juice = kwargs.get("JUICE", False)
+
+    particles = generate_initial_matrix_population(
+        array_base, c, population_size, juice=juice, VALID=valid
     )
 
     reactor = {"type": reactor_type, "particles": particles}
@@ -90,7 +94,7 @@ def power_plant(
     max_it = int(kwargs.get("max_it", 100))
 
     reactors = []
-    elite, _ = generate_initial_population(
+    elite = generate_initial_matrix_population(
         array_base, c, population_size, juice=False, VALID=True
     )
 
