@@ -1,4 +1,5 @@
 from .abc import artificial_bee_colony
+from .acgwo import caotic_grey_wolf_optimization
 from .cns import consistent_neighborhood_search
 from .ggacgt import genetic_algorithm_cgt
 from .jaya import jaya_optimization
@@ -18,4 +19,5 @@ __all__ = [
     "multi_verse_optimizer",
     "particle_swarm_optimization",
     "student_psychology_based_optimization",
+    "caotic_grey_wolf_optimization",
 ]
