@@ -6,60 +6,15 @@ The algorithm iteratively improves a population of solutions to achieve the
 best possible packing, minimizing the number of bins used.
 """
 
-import random
 import time
 from typing import List, Tuple
 
 import numpy as np
 
-from binpacksolver.utils import (best_fit_decreasing, bestfit_population,
+from binpacksolver.utils import (bestfit_population, repair_solution,
                                  check_end, fitness,
                                  generate_initial_population,
                                  generate_solution, theoretical_minimum)
-
-
-def repair_solution(
-    solution: np.ndarray, new_solution: np.ndarray, c: int
-) -> np.ndarray:
-    """
-    Repairs a solution by replacing invalid elements in the original solution
-    with valid elements from a new solution.
-
-    Parameters
-    ----------
-    solution : np.ndarray
-        The original solution that may contain invalid elements.
-    new_solution : np.ndarray
-        The new solution from which valid elements will be drawn.
-
-    Returns
-    -------
-    np.ndarray
-        The repaired solution where invalid elements have been replaced with
-        valid elements.
-    """
-    unique_values, counts = np.unique(solution, return_counts=True)
-    number_count_dict = dict(zip(unique_values, counts))
-    modify = []
-
-    for _, item in enumerate(new_solution):
-        if item in number_count_dict and number_count_dict[item]:
-            modify.append(item)
-            number_count_dict[item] -= 1
-            if not number_count_dict[item]:
-                number_count_dict.pop(item)
-
-    remaining_values = [
-        item for item, count in number_count_dict.items() for _ in range(count)
-    ]
-    random.shuffle(remaining_values)
-    solution = best_fit_decreasing(
-        np.array(remaining_values),
-        c,
-        generate_solution(np.array(modify), c, VALID=True)[0],
-    )
-    return np.concatenate(solution)
-
 
 # pylint: disable=R0914
 def jaya_optimization(
@@ -94,7 +49,6 @@ def jaya_optimization(
     Tuple[List[np.ndarray], int]
         The best solution found and its fitness (number of bins used).
     """
-    # Set minimum and maximum values
     min_value = array_base.min()
     max_value = array_base.max()
 
@@ -110,7 +64,7 @@ def jaya_optimization(
     best_idx = np.argmin(pop_matrix[:, -1])
 
     # Initial variables
-    best_fit = bestfit_population(pop_bins, c)
+    best_fit = pop_matrix[best_idx, -1]
     th = theoretical_minimum(array_base, c)
     it = 0
     start = time.time()
@@ -148,7 +102,6 @@ def jaya_optimization(
         combined_positions = np.vstack([pop_matrix, candidate_positions]).astype(int)
         combined_positions = combined_positions[combined_positions[:, -1].argsort()]
         pop_matrix = combined_positions[: pop_matrix.shape[0], :]
-
         best_fit = np.min(pop_matrix[:, -1])
 
     best_idx = np.argmin(pop_matrix[:, -1])

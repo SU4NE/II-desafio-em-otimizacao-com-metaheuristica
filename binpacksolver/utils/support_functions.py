@@ -406,3 +406,53 @@ def valid_solution(solution: np.ndarray, c: int) -> List[np.ndarray]:
 
     remaining_items[-1] = np.array(remaining_items[-1], dtype=int)
     return remaining_items
+
+
+def repair_solution(
+    solution: np.ndarray, new_solution: np.ndarray, c: int
+) -> np.ndarray:
+    """
+    Repairs a solution by replacing invalid elements in the original solution
+    with valid elements from a new solution.
+
+    Parameters
+    ----------
+    solution : np.ndarray
+        The original solution that may contain invalid elements.
+    new_solution : np.ndarray
+        The new solution from which valid elements will be drawn.
+
+    Returns
+    -------
+    np.ndarray
+        The repaired solution where invalid elements have been replaced with
+        valid elements.
+    """
+    unique_values, counts = np.unique(solution, return_counts=True)
+    number_count_dict = dict(zip(unique_values, counts))
+    modify = []
+
+    for _, item in enumerate(new_solution):
+        if item in number_count_dict and number_count_dict[item]:
+            modify.append(item)
+            number_count_dict[item] -= 1
+            if not number_count_dict[item]:
+                number_count_dict.pop(item)
+
+    remaining_values = [
+        item for item, count in number_count_dict.items() for _ in range(count)
+    ]
+    random.shuffle(remaining_values)
+    if len(modify):
+        solution = best_fit_decreasing(
+            np.array(remaining_values),
+            c,
+            generate_solution(np.array(modify), c, VALID=True)[0],
+        )
+    else:
+        solution = np.random.shuffle(solution)
+    
+    if isinstance(solution, list):
+        return np.concatenate(solution)
+    
+    return np.array(solution) 
