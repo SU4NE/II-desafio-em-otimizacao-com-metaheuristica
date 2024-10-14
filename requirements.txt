@@ -1,1 +1,4 @@
 numpy==1.24.4
+tabulate
+binpacksolver/utils/tabu_structure-0.1.0-cp38-cp38-linux_x86_64.whl
+binpacksolver/utils/tabu_structure-0.1.0-cp38-none-win_amd64.whl

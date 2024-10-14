@@ -1,2 +1,4 @@
 maturin
 pandas
+tabulate
+openpyxl
