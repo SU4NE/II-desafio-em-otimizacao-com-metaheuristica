@@ -1,9 +1,10 @@
 import time
+from typing import List, Tuple
 
 import numpy as np
 
 from binpacksolver.utils import (check_end, core_refurbishment, enrichment,
-                                 fission, fusion, generate_solution,
+                                 fission, fusion, generate_initial_population,
                                  theoretical_minimum)
 
 
@@ -35,18 +36,20 @@ def __operations(reactors, elite):
     return elite[0]
 
 
-def __assemble_reactor(items: np.ndarray, c: int, reactor_type: int, n_part: int):
+def __assemble_reactor(
+    array_base: np.ndarray, c: int, reactor_type: int, population_size: int
+) -> List:
     """_summary_
 
     Parameters
     ----------
-    items : np.ndarray
+    array_base : np.ndarray
         _description_
     c : int
         _description_
     reactor_type : int
         _description_
-    n_part : int
+    population_size : int
         _description_
 
     Returns
@@ -54,18 +57,23 @@ def __assemble_reactor(items: np.ndarray, c: int, reactor_type: int, n_part: int
     _type_
         _description_
     """
-    particles = [generate_solution(items, c) for _ in range(n_part)]
+    particles, _ = generate_initial_population(
+        array_base, c, population_size, juice=False, VALID=True
+    )
+
     reactor = {"type": reactor_type, "particles": particles}
 
     return reactor
 
 
-def power_plant(items: np.ndarray, c: int, **kwargs):
+def power_plant(
+    array_base: np.ndarray, c: int, **kwargs
+) -> Tuple[List[np.ndarray], int]:
     """_summary_
 
     Parameters
     ----------
-    items : np.ndarray
+    array_base : np.ndarray
         _description_
     c : int
         _description_
@@ -77,20 +85,22 @@ def power_plant(items: np.ndarray, c: int, **kwargs):
     """
     n_fusion = int(kwargs.get("n_reactors", 100) * 0.3)
     n_fission = int(kwargs.get("n_reactors", 100) * 0.7)
-    n_part = kwargs.get("n_particles", 10)
-    time_max = int(kwargs.get("time_max", 100))
+    population_size = kwargs.get("n_particles", 10)
+    time_max = int(kwargs.get("time_max", None))
     max_it = int(kwargs.get("max_it", 100))
 
     reactors = []
-    elite = [generate_solution(items, c) for _ in range(n_part)]
+    elite, _ = generate_initial_population(
+        array_base, c, population_size, juice=False, VALID=True
+    )
 
     for _ in range(n_fusion):
-        reactors.append(__assemble_reactor(items, c, 0, n_part))
+        reactors.append(__assemble_reactor(array_base, c, 0, population_size))
 
     for _ in range(n_fission):
-        reactors.append(__assemble_reactor(items, c, 1, n_part))
+        reactors.append(__assemble_reactor(array_base, c, 1, population_size))
 
-    th = theoretical_minimum(items, c)
+    th = theoretical_minimum(array_base, c)
     time_start = time.time()
 
     while check_end(th, elite[0], time_max, time_start, None, max_it, 0):
