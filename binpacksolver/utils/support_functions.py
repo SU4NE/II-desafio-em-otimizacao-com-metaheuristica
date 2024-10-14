@@ -481,7 +481,7 @@ def generate_initial_matrix_population(
         matrix  of Population of bins.
     """
     pop_bins, _ = generate_initial_population(solution, c, population, juice, **kwargs)
-        
+
     fitness_values = np.array([fitness(lst) for lst in pop_bins])
     pop_bins = np.vstack([np.concatenate(lst) for lst in pop_bins]).astype(int)
     return np.hstack((pop_bins, fitness_values[:, np.newaxis]))

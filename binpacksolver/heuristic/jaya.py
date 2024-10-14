@@ -11,7 +11,8 @@ from typing import List, Tuple
 
 import numpy as np
 
-from binpacksolver.utils import (check_end, fitness, generate_initial_matrix_population,
+from binpacksolver.utils import (check_end, fitness,
+                                 generate_initial_matrix_population,
                                  generate_solution, repair_solution,
                                  theoretical_minimum)
 
@@ -51,8 +52,10 @@ def jaya_optimization(
     """
     min_value = array_base.min()
     max_value = array_base.max()
-    
-    pop_matrix = generate_initial_matrix_population(array_base, c, population_size, VALID=True)
+
+    pop_matrix = generate_initial_matrix_population(
+        array_base, c, population_size, VALID=True
+    )
     best_idx = np.argmin(pop_matrix[:, -1])
 
     # Initial variables

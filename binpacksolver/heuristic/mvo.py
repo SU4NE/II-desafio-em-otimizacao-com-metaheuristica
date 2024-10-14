@@ -151,7 +151,9 @@ def multi_verse_optimizer(
     min_value = array_base.min()
     max_value = array_base.max()
 
-    uni_matrix = generate_initial_matrix_population(array_base, c, population_size, VALID=True)
+    uni_matrix = generate_initial_matrix_population(
+        array_base, c, population_size, VALID=True
+    )
 
     # Initial variables
     best_idx = np.argmin(uni_matrix[:, -1])

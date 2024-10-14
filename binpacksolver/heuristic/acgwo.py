@@ -11,7 +11,7 @@ import time
 import numpy as np
 
 from binpacksolver.utils import (check_end, fitness,
-                                 generate_initial_matrix_population, 
+                                 generate_initial_matrix_population,
                                  generate_solution, repair_solution,
                                  theoretical_minimum)
 
@@ -131,16 +131,18 @@ def caotic_grey_wolf_optimization(
     """
     min_value = array_base.min()
     max_value = array_base.max()
-    
+
     # Generate initial population
     wolf_adjustment = max(min(wolf_adjustment, 1), 0)
-    wolves_matrix = generate_initial_matrix_population(array_base, c, population_size, VALID=True)
+    wolves_matrix = generate_initial_matrix_population(
+        array_base, c, population_size, VALID=True
+    )
 
     # Identify the best solution in the initial population
     best_idx = np.argmin(wolves_matrix[:, -1])
     best_fit = wolves_matrix[best_idx, -1]
     best_alpha = wolves_matrix[best_idx, :-1]
-    
+
     # Initial variables
     th = theoretical_minimum(array_base, c)
     it = 0

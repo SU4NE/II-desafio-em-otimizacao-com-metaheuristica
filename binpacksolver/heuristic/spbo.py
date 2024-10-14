@@ -101,9 +101,11 @@ def student_psychology_based_optimization(
     """
     min_value = array_base.min()
     max_value = array_base.max()
-    
-    students_matrix = generate_initial_matrix_population(array_base, c, population_size, VALID=True)
-    
+
+    students_matrix = generate_initial_matrix_population(
+        array_base, c, population_size, VALID=True
+    )
+
     # Identify the best solution in the initial population
     best_idx = np.argmin(students_matrix[:, -1])
     best_solution = students_matrix[best_idx, :-1]
