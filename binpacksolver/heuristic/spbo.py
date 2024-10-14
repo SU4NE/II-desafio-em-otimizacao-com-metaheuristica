@@ -13,7 +13,7 @@ from typing import List, Tuple
 import numpy as np
 
 from binpacksolver.utils import (check_end, fitness,
-                                 generate_initial_population,
+                                 generate_initial_matrix_population,
                                  generate_solution, repair_solution,
                                  theoretical_minimum)
 
@@ -101,18 +101,9 @@ def student_psychology_based_optimization(
     """
     min_value = array_base.min()
     max_value = array_base.max()
-
-    students, _ = generate_initial_population(
-        array_base, c, population_size, juice=False, VALID=True
-    )
-
-    # Flatten the population and combine with fitness values
-    fitness_values = np.array([fitness(lst) for lst in students])
-    students_flat = np.vstack([np.concatenate(lst) for lst in students]).astype(int)
-    students_matrix = np.hstack((students_flat, fitness_values[:, np.newaxis])).astype(
-        int
-    )
-
+    
+    students_matrix = generate_initial_matrix_population(array_base, c, population_size, VALID=True)
+    
     # Identify the best solution in the initial population
     best_idx = np.argmin(students_matrix[:, -1])
     best_solution = students_matrix[best_idx, :-1]

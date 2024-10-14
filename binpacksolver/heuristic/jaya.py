@@ -11,8 +11,7 @@ from typing import List, Tuple
 
 import numpy as np
 
-from binpacksolver.utils import (check_end, fitness,
-                                 generate_initial_population,
+from binpacksolver.utils import (check_end, fitness, generate_initial_matrix_population,
                                  generate_solution, repair_solution,
                                  theoretical_minimum)
 
@@ -52,16 +51,8 @@ def jaya_optimization(
     """
     min_value = array_base.min()
     max_value = array_base.max()
-
-    # Generate initial population
-    pop_bins, _ = generate_initial_population(
-        array_base, c, population_size, juice=False, VALID=True
-    )
-
-    # Flatten the population and combine with fitness values
-    fitness_values = np.array([fitness(lst) for lst in pop_bins])
-    pop_bins_flat = np.vstack([np.concatenate(lst) for lst in pop_bins]).astype(int)
-    pop_matrix = np.hstack((pop_bins_flat, fitness_values[:, np.newaxis])).astype(int)
+    
+    pop_matrix = generate_initial_matrix_population(array_base, c, population_size, VALID=True)
     best_idx = np.argmin(pop_matrix[:, -1])
 
     # Initial variables

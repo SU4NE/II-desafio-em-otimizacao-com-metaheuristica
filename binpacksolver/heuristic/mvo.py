@@ -13,7 +13,7 @@ from typing import List, Tuple
 import numpy as np
 
 from binpacksolver.utils import (check_end, fitness,
-                                 generate_initial_population,
+                                 generate_initial_matrix_population,
                                  generate_solution, repair_solution,
                                  theoretical_minimum)
 
@@ -151,15 +151,7 @@ def multi_verse_optimizer(
     min_value = array_base.min()
     max_value = array_base.max()
 
-    # Generate initial population
-    universes, _ = generate_initial_population(
-        array_base, c, population_size, juice=False, VALID=True
-    )
-
-    # Flatten the population and combine with fitness values
-    fitness_values = np.array([fitness(lst) for lst in universes])
-    universes_flat = np.vstack([np.concatenate(lst) for lst in universes]).astype(int)
-    uni_matrix = np.hstack((universes_flat, fitness_values[:, np.newaxis])).astype(int)
+    uni_matrix = generate_initial_matrix_population(array_base, c, population_size, VALID=True)
 
     # Initial variables
     best_idx = np.argmin(uni_matrix[:, -1])
