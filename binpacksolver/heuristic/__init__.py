@@ -11,9 +11,9 @@ from .tabusearch import tabu_search
 
 __all__ = [
     "tabu_search",
-    "artificial_bee_colony",
     "genetic_algorithm_cgt",
     "consistent_neighborhood_search",
+    "artificial_bee_colony",
     "simulated_annealing",
     "jaya_optimization",
     "multi_verse_optimizer",

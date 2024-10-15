@@ -131,6 +131,36 @@ def generate_initial_population(
     return pop_bins, pop_containers
 
 
+def generate_initial_matrix_population(
+    solution: np.ndarray, c: int, population: int, juice: bool = False, **kwargs
+) -> np.ndarray:
+    """
+    Generates an initial population for the bin packing problem.
+
+    Parameters
+    ----------
+    solution : np.ndarray
+        Initial solution representing the items to be packed.
+    c : int
+        Bin capacity.
+    population : int
+        Number of individuals in the population.
+    juice: bool
+        If True, the last individual will use BFD.
+
+    Returns
+    -------
+    pop_matrix: np.ndarray
+        matrix  of Population of bins.
+    """
+    pop_bins, _ = generate_initial_population(solution, c, population, juice, **kwargs)
+
+    fitness_values = np.array([fitness(lst) for lst in pop_bins])
+    pop_bins = np.vstack([np.concatenate(lst) for lst in pop_bins]).astype(int)
+
+    return np.hstack((pop_bins, fitness_values[:, np.newaxis]))
+
+
 def fitness(solution: Union[List[np.ndarray], np.ndarray], c: int = -1) -> int:
     """
     Calculates the fitness of the given solution.
@@ -458,35 +488,6 @@ def repair_solution(
         return np.concatenate(solution)
 
     return np.array(solution)
-
-
-def generate_initial_matrix_population(
-    solution: np.ndarray, c: int, population: int, juice: bool = False, **kwargs
-) -> np.ndarray:
-    """
-    Generates an initial population for the bin packing problem.
-
-    Parameters
-    ----------
-    solution : np.ndarray
-        Initial solution representing the items to be packed.
-    c : int
-        Bin capacity.
-    population : int
-        Number of individuals in the population.
-    juice: bool
-        If True, the last individual will use BFD.
-
-    Returns
-    -------
-    np.ndarray
-        matrix  of Population of bins.
-    """
-    pop_bins, _ = generate_initial_population(solution, c, population, juice, **kwargs)
-
-    fitness_values = np.array([fitness(lst) for lst in pop_bins])
-    pop_bins = np.vstack([np.concatenate(lst) for lst in pop_bins]).astype(int)
-    return np.hstack((pop_bins, fitness_values[:, np.newaxis]))
 
 
 def local_search(
