@@ -12,14 +12,10 @@ from typing import List, Tuple
 
 import numpy as np
 
-from binpacksolver.utils import (
-    check_end,
-    fitness,
-    generate_initial_matrix_population,
-    generate_solution,
-    repair_solution,
-    theoretical_minimum,
-)
+from binpacksolver.utils import (check_end, fitness,
+                                 generate_initial_matrix_population,
+                                 generate_solution, repair_solution,
+                                 theoretical_minimum)
 
 
 def roulette_wheel_selection(inflation_rates: np.ndarray) -> int:

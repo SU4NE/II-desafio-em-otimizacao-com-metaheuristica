@@ -10,6 +10,7 @@ from .pso import particle_swarm_optimization
 from .sa import simulated_annealing
 from .spbo import student_psychology_based_optimization
 from .tabusearch import tabu_search
+from .sos import symbiotic_organisms_search
 from .gsa import gravitational_search_algorithm
 
 __all__ = [
@@ -26,4 +27,5 @@ __all__ = [
     "memetic_algorithm",
     "imperialist_competitive_algorithm",
     "gravitational_search_algorithm",
+    "symbiotic_organisms_search",
 ]
