@@ -1,17 +1,18 @@
 import random
 import time
-import numpy as np
 from typing import Tuple
-from binpacksolver.utils import (
-    check_end,
-    fitness,
-    generate_initial_matrix_population,
-    repair_solution,
-    theoretical_minimum,
-    generate_solution,
-)
 
-def nonlinear_inertia_weight(it: int, max_it: int, w_max: float = 0.9, w_min: float = 0.4) -> float:
+import numpy as np
+
+from binpacksolver.utils import (check_end, fitness,
+                                 generate_initial_matrix_population,
+                                 generate_solution, repair_solution,
+                                 theoretical_minimum)
+
+
+def nonlinear_inertia_weight(
+    it: int, max_it: int, w_max: float = 0.9, w_min: float = 0.4
+) -> float:
     """
     Computes the nonlinear inertia weight, used to control the balance
     between global and local search.
@@ -34,6 +35,7 @@ def nonlinear_inertia_weight(it: int, max_it: int, w_max: float = 0.9, w_min: fl
     """
     return w_max - ((w_max - w_min) * (it / max_it) ** 2)
 
+
 def adaptive_t_distribution(n: int, dim: int, scale: float = 1.0) -> np.ndarray:
     """
     Generates random numbers using the T-distribution with 1.5 degrees
@@ -54,6 +56,7 @@ def adaptive_t_distribution(n: int, dim: int, scale: float = 1.0) -> np.ndarray:
         Random samples from the T-distribution.
     """
     return np.random.standard_t(df=1.5, size=(n, dim)) * scale
+
 
 def improved_coati_optimization_algorithm(
     array_base: np.ndarray,
@@ -99,10 +102,12 @@ def improved_coati_optimization_algorithm(
     min_value = array_base.min()
     max_value = array_base.max()
     n = array_base.shape[0]
-    
+
     # Chaotic initialization using Tent Chaos
-    coati_matrix = generate_initial_matrix_population(array_base, c, population_size, TENTCHAOS=True)
-    
+    coati_matrix = generate_initial_matrix_population(
+        array_base, c, population_size, TENTCHAOS=True
+    )
+
     # Initialize personal best solution and fitness
     best_idx = np.argmin(coati_matrix[:, -1])
     best_solution = coati_matrix[best_idx, :-1].copy()
@@ -114,14 +119,25 @@ def improved_coati_optimization_algorithm(
     start = time.time()
 
     while check_end(th, best_fitness, time_max, start, time.time(), max_it, it):
-        inertia_weight = nonlinear_inertia_weight(it, max_it if max_it else max((time_max * 1e2) // population_size - time.time(), 100), w_max, w_min)
+        inertia_weight = nonlinear_inertia_weight(
+            it,
+            (
+                max_it
+                if max_it
+                else max((time_max * 1e2) // population_size - time.time(), 100)
+            ),
+            w_max,
+            w_min,
+        )
 
         for i in range(coati_matrix.shape[0]):
             if random.random() < 0.5:
                 new_coati = best_solution + inertia_weight * np.random.uniform(-1, 1, n)
             else:
-                new_coati = coati_matrix[i, :-1] + inertia_weight * np.random.uniform(-1, 1, n)
-            
+                new_coati = coati_matrix[i, :-1] + inertia_weight * np.random.uniform(
+                    -1, 1, n
+                )
+
             new_coati = np.clip(new_coati, min_value, max_value).astype(int)
             coati_matrix[i, :-1] = repair_solution(coati_matrix[i, :-1], new_coati, c)
 
@@ -131,7 +147,9 @@ def improved_coati_optimization_algorithm(
                 t_variation = adaptive_t_distribution(1, n, scale).flatten()
                 new_coati = coati_matrix[i, :-1] + t_variation
                 new_coati = np.clip(new_coati, min_value, max_value).astype(int)
-                coati_matrix[i, :-1] = repair_solution(coati_matrix[i, :-1], new_coati, c)
+                coati_matrix[i, :-1] = repair_solution(
+                    coati_matrix[i, :-1], new_coati, c
+                )
 
         for i in range(coati_matrix.shape[0]):
             coati_matrix[i, -1] = fitness(coati_matrix[i, :-1], c)

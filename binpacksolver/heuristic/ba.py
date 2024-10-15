@@ -1,21 +1,27 @@
-import numpy as np
 import time
 from typing import Tuple
-from binpacksolver.utils import (
-    fitness,
-    generate_initial_matrix_population,
-    repair_solution,
-    check_end,
-    generate_solution,
-    theoretical_minimum
-)
+
+import numpy as np
+
+from binpacksolver.utils import (check_end, fitness,
+                                 generate_initial_matrix_population,
+                                 generate_solution, repair_solution,
+                                 theoretical_minimum)
 
 
 def update_position_and_velocity(
-    bat: np.ndarray, velocity: np.ndarray, best_bat: np.ndarray, frequency: float, A: float, r: float, min_value: int, max_value:int
+    bat: np.ndarray,
+    velocity: np.ndarray,
+    best_bat: np.ndarray,
+    frequency: float,
+    loudness: float,
+    r: float,
+    min_value: int,
+    max_value: int,
 ) -> Tuple[np.ndarray, np.ndarray]:
     """
-    Updates the velocity and position of a bat based on its frequency, the global best, and its local random behavior.
+    Updates the velocity and position of a bat based on its frequency,
+    the global best, and its local random behavior.
 
     Parameters
     ----------
@@ -27,7 +33,7 @@ def update_position_and_velocity(
         The best bat (global best solution).
     frequency : float
         The frequency at which the bat moves.
-    A : float
+    loudness : float
         Loudness value, controlling local search behavior.
     r : float
         Pulse emission rate.
@@ -41,7 +47,7 @@ def update_position_and_velocity(
     new_position = bat + velocity
 
     if np.random.rand() > r:
-        new_position = best_bat + A * np.random.uniform(-1, 1, len(bat))
+        new_position = best_bat + loudness * np.random.uniform(-1, 1, len(bat))
 
     return np.clip(new_position, min_value, max_value).astype(int), velocity
 
@@ -52,11 +58,11 @@ def bat_algorithm(
     time_max: float = 60,
     max_it: int = None,
     pop_size: int = 30,
-    A: float = 0.5,
+    loudness: float = 0.5,
     r: float = 0.5,
     f_min: float = 0,
     f_max: float = 1,
-    loudness: float = 0.9
+    loudness_factor: float = 0.9,
 ) -> Tuple[np.ndarray, float]:
     """
     Bat Algorithm (BA) applied to the Bin Packing Problem (BPP).
@@ -73,7 +79,7 @@ def bat_algorithm(
         Maximum number of iterations, by default None (unlimited).
     pop_size : int, optional
         Population size, by default 30.
-    A : float, optional
+    loudness : float, optional
         Loudness controlling local search, by default 0.5.
     r : float, optional
         Pulse emission rate, by default 0.5.
@@ -81,6 +87,8 @@ def bat_algorithm(
         Minimum frequency, by default 0.
     f_max : float, optional
         Maximum frequency, by default 1.
+    loudness_factor : float, optional
+        Controlling loudness, by default 0.9.
 
     Returns
     -------
@@ -115,15 +123,13 @@ def bat_algorithm(
                 velocities[i],
                 best_solution,
                 frequencies[i],
-                A,
+                loudness,
                 r,
                 min_value,
-                max_value
+                max_value,
             )
-    
-            bat_matrix[i, :-1] = repair_solution(
-                bat_matrix[i, :-1], new_bat, c
-            )
+
+            bat_matrix[i, :-1] = repair_solution(bat_matrix[i, :-1], new_bat, c)
 
             fitness_value = fitness(bat_matrix[i, :-1], c)
             bat_matrix[i, -1] = fitness_value
@@ -132,7 +138,7 @@ def bat_algorithm(
                 best_solution = bat_matrix[i, :-1].copy()
                 best_fitness = fitness_value
 
-        A *= loudness
+        loudness *= loudness_factor
         r = r * (1 - np.exp(-it))
         it += 1
 

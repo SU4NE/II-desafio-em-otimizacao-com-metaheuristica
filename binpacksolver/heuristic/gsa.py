@@ -1,4 +1,5 @@
 """_summary_"""
+
 import time
 from typing import List, Tuple
 
@@ -11,10 +12,11 @@ from binpacksolver.utils import (check_end, fitness,
 
 
 def compute_gravitational_force(
-    particle: np.ndarray, other_particle: np.ndarray, G: float, distance: float
+    particle: np.ndarray, other_particle: np.ndarray, force_g: float, distance: float
 ):
     """
-    Computes the gravitational force between two particles based on the gravitational constant G.
+    Computes the gravitational force between two particles based on
+    the gravitational constant force_g.
 
     Parameters
     ----------
@@ -22,7 +24,7 @@ def compute_gravitational_force(
         The current particle (solution).
     other_particle : np.ndarray
         The other particle (solution).
-    G : float
+    force_g : float
         The gravitational constant.
     distance : float
         The distance between the two particles.
@@ -32,10 +34,17 @@ def compute_gravitational_force(
     np.ndarray
         The gravitational force exerted on the current particle.
     """
-    return G * (other_particle - particle) / (distance + 1e-9)
+    return force_g * (other_particle - particle) / (distance + 1e-9)
 
 
-def move_particle(particle: np.ndarray, velocity: np.ndarray, force: np.ndarray, mass: float, min_value: int, max_value:int):
+def move_particle(
+    particle: np.ndarray,
+    velocity: np.ndarray,
+    force: np.ndarray,
+    mass: float,
+    min_value: int,
+    max_value: int,
+):
     """
     Moves the particle based on its velocity and the gravitational force acting on it.
 
@@ -54,7 +63,7 @@ def move_particle(particle: np.ndarray, velocity: np.ndarray, force: np.ndarray,
     -------
     Tuple[np.ndarray, np.ndarray]
         The new position and velocity of the particle.
-    """  
+    """
     mass = max(mass, 1e-9)
     new_velocity = velocity + force / mass
     new_position = particle + new_velocity
@@ -99,7 +108,7 @@ def gravitational_search_algorithm(
     )
     velocities = np.zeros((population_size, n))
     masses = np.ones(population_size)
-    G = 1
+    force_g = 1
 
     # Find the initial best solution
     best_idx = np.argmin(gravitational_matrix[:, -1])
@@ -134,20 +143,25 @@ def gravitational_search_algorithm(
                     force += compute_gravitational_force(
                         gravitational_matrix[i, :-1],
                         gravitational_matrix[j, :-1],
-                        G,
+                        force_g,
                         distance,
                     )
 
             # Move the particle based on the resulting force and update its velocity
             new_gravitational, velocities[i] = move_particle(
-                gravitational_matrix[i, :-1], velocities[i], force, masses[i], min_value, max_value
+                gravitational_matrix[i, :-1],
+                velocities[i],
+                force,
+                masses[i],
+                min_value,
+                max_value,
             )
 
             # Ensure the solution is valid after movement
             gravitational_matrix[i, :-1] = repair_solution(
                 gravitational_matrix[i, :-1], new_gravitational, c
             )
-        
+
         for i in range(population_size):
             gravitational_matrix[i, -1] = fitness(gravitational_matrix[i, :-1], c)
 
@@ -156,7 +170,7 @@ def gravitational_search_algorithm(
         best_solution = gravitational_matrix[best_idx, :-1]
 
         # Decay the gravitational constant
-        G = G * grav_decay
+        force_g = force_g * grav_decay
 
         # Increment iteration count
         it += 1

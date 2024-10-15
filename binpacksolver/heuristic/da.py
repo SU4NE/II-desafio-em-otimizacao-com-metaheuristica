@@ -1,20 +1,27 @@
-import random
-import time
-import numpy as np
-from typing import Tuple
-from binpacksolver.utils import (
-    check_end,
-    fitness,
-    generate_initial_matrix_population,
-    repair_solution,
-    theoretical_minimum,
-    generate_solution,
-)
+"""_summary_"""
 
-def update_dragonfly_position(dragonfly: np.ndarray, neighbors: np.ndarray, food: np.ndarray, enemy: np.ndarray, r: float) -> np.ndarray:
+import time
+from typing import Tuple
+
+import numpy as np
+
+from binpacksolver.utils import (check_end, fitness,
+                                 generate_initial_matrix_population,
+                                 generate_solution, repair_solution,
+                                 theoretical_minimum)
+
+
+def update_dragonfly_position(
+    dragonfly: np.ndarray,
+    neighbors: np.ndarray,
+    food: np.ndarray,
+    enemy: np.ndarray,
+    r: float,
+) -> np.ndarray:
     """
-    Updates the position of a dragonfly based on neighbors, food (best solution), and enemy (worst solution).
-    
+    Updates the position of a dragonfly based on neighbors,
+    food (best solution), and enemy (worst solution).
+
     Parameters
     ----------
     dragonfly : np.ndarray
@@ -27,7 +34,7 @@ def update_dragonfly_position(dragonfly: np.ndarray, neighbors: np.ndarray, food
         The worst solution found so far.
     r : float
         A random factor for updating the position.
-    
+
     Returns
     -------
     np.ndarray
@@ -45,11 +52,11 @@ def dragonfly_algorithm(
     c: int,
     time_max: float = 60,
     max_it: int = None,
-    population_size: int = 7
+    population_size: int = 7,
 ) -> Tuple[np.ndarray, float]:
     """
     Dragonfly Algorithm (DA) applied to the Bin Packing Problem (BPP).
-    
+
     Parameters
     ----------
     array_base : np.ndarray
@@ -62,7 +69,7 @@ def dragonfly_algorithm(
         Maximum number of iterations, by default None (unlimited).
     population_size : int, optional
         Population size of dragonflies, by default 7.
-    
+
     Returns
     -------
     Tuple[np.ndarray, float]
@@ -71,7 +78,9 @@ def dragonfly_algorithm(
     min_value = array_base.min()
     max_value = array_base.max()
 
-    population_matrix = generate_initial_matrix_population(array_base, c, population_size, VALID=True)
+    population_matrix = generate_initial_matrix_population(
+        array_base, c, population_size, VALID=True
+    )
 
     # Initialize the best solution and its fitness
     best_idx = np.argmin(population_matrix[:, -1])
@@ -100,9 +109,11 @@ def dragonfly_algorithm(
             new_position = update_dragonfly_position(
                 population_matrix[i, :-1], neighbors, food, enemy, r
             )
-            
+
             new_position = np.clip(new_position, min_value, max_value).astype(int)
-            population_matrix[i, :-1] = repair_solution(population_matrix[i, :-1], new_position, c)
+            population_matrix[i, :-1] = repair_solution(
+                population_matrix[i, :-1], new_position, c
+            )
             population_matrix[i, -1] = fitness(population_matrix[i, :-1], c)
 
         it += 1

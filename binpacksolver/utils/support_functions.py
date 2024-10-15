@@ -408,15 +408,16 @@ def bestfit_population(
         return min(fitness(population[i, :], c) for i in range(population.shape[0]))
     return min(fitness(bins) for bins in population)
 
+
 def tent_chaos(items: np.ndarray, c: int) -> List[np.ndarray]:
     """
     Applies a Tent Chaos Map to shuffle the order of items in the BPP.
-    
+
     Parameters
     ----------
     items : np.ndarray
         Array of item weights.
-    
+
     Returns
     -------
     np.ndarray
@@ -425,7 +426,7 @@ def tent_chaos(items: np.ndarray, c: int) -> List[np.ndarray]:
     n = len(items)
     indices = np.arange(n)
     x = random.uniform(0, 1)
-    
+
     for i in range(n):
         if x < 0.7:
             x = x / 0.7
@@ -435,6 +436,7 @@ def tent_chaos(items: np.ndarray, c: int) -> List[np.ndarray]:
         indices[i], indices[swap_idx] = indices[swap_idx], indices[i]
 
     return valid_solution(items[indices], c)
+
 
 def valid_solution(solution: np.ndarray, c: int) -> List[np.ndarray]:
     """

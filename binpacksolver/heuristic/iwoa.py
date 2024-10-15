@@ -1,20 +1,27 @@
-import time
-import numpy as np
 import random
+import time
 from typing import Tuple
-from binpacksolver.utils import (
-    check_end,
-    fitness,
-    generate_initial_matrix_population,
-    repair_solution,
-    theoretical_minimum,
-    generate_solution,
-)
+
+import numpy as np
+
+from binpacksolver.utils import (check_end, fitness,
+                                 generate_initial_matrix_population,
+                                 generate_solution, repair_solution,
+                                 theoretical_minimum)
+
 
 # Update the position of whales (improved with chaos or hybrid operators)
-def update_whale_position(whale: np.ndarray, leader: np.ndarray, b: float, l: float, a: float, A: float, C: float) -> np.ndarray:
+def update_whale_position(
+    whale: np.ndarray,
+    leader: np.ndarray,
+    b: float,
+    l: float,
+    adjust_a: float,
+    adjust_c: float,
+) -> np.ndarray:
     """
-    Updates the position of a whale based on linear or spiral motion, depending on a probabilistic condition.
+    Updates the position of a whale based on linear or spiral motion,
+    depending on a probabilistic condition.
 
     Parameters
     ----------
@@ -26,11 +33,9 @@ def update_whale_position(whale: np.ndarray, leader: np.ndarray, b: float, l: fl
         Spiral constant.
     l : float
         Random value for spiral movement.
-    a : float
-        Adaptive parameter to control the A factor.
-    A : float
+    adjust_a : float
         Adjustment factor for whale position update.
-    C : float
+    adjust_c : float
         Another adjustment factor for whale position update.
 
     Returns
@@ -39,8 +44,8 @@ def update_whale_position(whale: np.ndarray, leader: np.ndarray, b: float, l: fl
         The updated position of the whale.
     """
     if random.random() < 0.5:
-        D = abs(C * leader - whale)
-        whale = leader - A * D
+        adjust_d = abs(adjust_c * leader - whale)
+        whale = leader - adjust_a * adjust_d
     else:
         distance_to_leader = abs(leader - whale)
         whale = distance_to_leader * np.exp(b * l) * np.cos(2 * np.pi * l) + leader
@@ -77,7 +82,9 @@ def improved_whale_optimization_algorithm(
         The best solution found and its fitness score.
     """
     # Initialize the population as a matrix, where the last column stores fitness values
-    population_matrix = generate_initial_matrix_population(array_base, c, population_size, VALID=True)
+    population_matrix = generate_initial_matrix_population(
+        array_base, c, population_size, VALID=True
+    )
 
     # Initialize personal best positions (personal bests) and global best (global best)
     personal_best_positions = population_matrix[:, :-1].copy()
@@ -93,15 +100,22 @@ def improved_whale_optimization_algorithm(
     start = time.time()
 
     while check_end(th, global_best_score, time_max, start, time.time(), max_it, it):
-        a = 2 - it * (2 / (max_it if max_it else max((time_max * 1e8) // population_size, 100)))
-        A = 2 * a * random.random() - a
-        C = 2 * random.random()
+        a = 2 - it * (
+            2 / (max_it if max_it else max((time_max * 1e8) // population_size, 100))
+        )
+        adjust_a = 2 * a * random.random() - a
+        adjust_c = 2 * random.random()
         spiral_constant = 1
         l = (2 * random.random()) - 1
 
         for i in range(population_size):
             new_position = update_whale_position(
-                population_matrix[i, :-1], global_best_position, spiral_constant, l, a, A, C
+                population_matrix[i, :-1],
+                global_best_position,
+                spiral_constant,
+                l,
+                adjust_a,
+                adjust_c,
             )
 
             population_matrix[i, :-1] = repair_solution(

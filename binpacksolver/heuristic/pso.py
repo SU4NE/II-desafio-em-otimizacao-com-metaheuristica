@@ -1,15 +1,15 @@
 """_summary_"""
+
 import time
 from typing import List, Tuple
+
 import numpy as np
-from binpacksolver.utils import (
-    check_end,
-    fitness,
-    generate_initial_matrix_population,
-    generate_solution,
-    repair_solution,
-    theoretical_minimum
-)
+
+from binpacksolver.utils import (check_end, fitness,
+                                 generate_initial_matrix_population,
+                                 generate_solution, repair_solution,
+                                 theoretical_minimum)
+
 
 def particle_swarm_optimization(
     array_base: np.ndarray,
@@ -54,7 +54,9 @@ def particle_swarm_optimization(
     particles_matrix = generate_initial_matrix_population(
         array_base, c, population_size, VALID=True
     )
-    velocities = np.random.uniform(min_value, max_value, (population_size, array_base.shape[0]))
+    velocities = np.random.uniform(
+        min_value, max_value, (population_size, array_base.shape[0])
+    )
     fitness_values = particles_matrix[:, -1].copy()
     personal_best_positions = particles_matrix[:, :-1].copy()
     personal_best_scores = fitness_values.copy()
@@ -71,12 +73,18 @@ def particle_swarm_optimization(
         for i in range(population_size):
             velocities[i] = (
                 w * velocities[i]
-                + c1 * np.random.random() * (personal_best_positions[i] - particles_matrix[i, :-1])
-                + c2 * np.random.random() * (global_best_position - particles_matrix[i, :-1])
+                + c1
+                * np.random.random()
+                * (personal_best_positions[i] - particles_matrix[i, :-1])
+                + c2
+                * np.random.random()
+                * (global_best_position - particles_matrix[i, :-1])
             )
 
             new_position = np.abs(particles_matrix[i, :-1] + velocities[i]).astype(int)
-            particles_matrix[i, :-1] = repair_solution(particles_matrix[i, :-1].copy(), new_position, c)
+            particles_matrix[i, :-1] = repair_solution(
+                particles_matrix[i, :-1].copy(), new_position, c
+            )
 
             current_fitness = fitness(particles_matrix[i, :-1], c)
             particles_matrix[i, -1] = current_fitness
