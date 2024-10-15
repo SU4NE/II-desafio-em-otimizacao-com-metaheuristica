@@ -42,7 +42,10 @@ def __perturb_solution(
     new_solution = solution.copy()
     new_containers = containers.copy()
     source_bin_idx = random.randint(0, best_fit - 1)
-    item_to_move = random.randint(0, fitness(new_solution[source_bin_idx]) - 1)
+    item_to_move = random.randint(
+        0,
+        fitness(new_solution[source_bin_idx], c) - 1,
+    )
     item = new_solution[source_bin_idx][item_to_move]
     new_containers[source_bin_idx] += item
 
@@ -54,7 +57,7 @@ def __perturb_solution(
             new_solution[source_bin_idx], item_to_move
         )
 
-    destination_bin_idx = random.randint(0, fitness(new_solution))
+    destination_bin_idx = random.randint(0, fitness(new_solution, c))
     if destination_bin_idx == len(new_solution):
         new_solution.append(np.array([item], dtype=int))
         new_containers.append(c - item)
@@ -83,7 +86,6 @@ def __accept_solution(new_fitness: int, best_fit: int, temperature: float):
     )
 
 
-# pylint: disable=R0913
 def __operations(
     best_fit: int,
     solution: List[np.ndarray],
@@ -119,7 +121,7 @@ def __operations(
         new_solution, new_containers = __perturb_solution(
             best_fit, solution, containers, c
         )
-        new_fitness = fitness(new_solution)
+        new_fitness = fitness(new_solution, c)
         if evaluate_solution(new_containers) and __accept_solution(
             new_fitness, best_fit, temperature
         ):
@@ -168,7 +170,7 @@ def simulated_annealing(
     solution, containers = generate_solution(solution, c)
     th_min: int = theoretical_minimum(array_base, c)
     best_solution = solution
-    best_fit: int = fitness(solution)
+    best_fit: int = fitness(solution, c)
     temperature: float = initial_temperature
     time_start: float = time.time()
 
@@ -185,11 +187,8 @@ def simulated_annealing(
             best_fit, solution, containers, c, temperature, iterations_per_temperature
         )
 
-        if best_fit < fitness(best_solution):
+        if best_fit < fitness(best_solution, c):
             best_solution = solution.copy()
         temperature *= alpha
 
-    return best_solution, fitness(best_solution)
-
-
-# pylint: enable=R0913
+    return best_solution, fitness(best_solution, c)

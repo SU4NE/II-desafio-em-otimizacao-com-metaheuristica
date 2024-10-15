@@ -56,7 +56,6 @@ def __operations(
     return new_solution, new_fit
 
 
-# pylint: disable=R0913
 def tabu_search(
     array_base: np.ndarray,
     c: int,
@@ -99,6 +98,3 @@ def tabu_search(
         it += 1
 
     return solution, best_fit
-
-
-# pylint: enable=R0913
