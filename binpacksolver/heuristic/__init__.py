@@ -12,6 +12,11 @@ from .spbo import student_psychology_based_optimization
 from .tabusearch import tabu_search
 from .sos import symbiotic_organisms_search
 from .gsa import gravitational_search_algorithm
+from .iwoa import improved_whale_optimization_algorithm
+from .tntwcoa import improved_coati_optimization_algorithm
+from .ba import bat_algorithm
+from .eho import elephant_herding_optimization
+from .da import dragonfly_algorithm
 
 __all__ = [
     "tabu_search",
@@ -28,4 +33,9 @@ __all__ = [
     "imperialist_competitive_algorithm",
     "gravitational_search_algorithm",
     "symbiotic_organisms_search",
+    "improved_whale_optimization_algorithm",
+    "improved_coati_optimization_algorithm",
+    "bat_algorithm",
+    "elephant_herding_optimization",
+    "dragonfly_algorithm"
 ]
