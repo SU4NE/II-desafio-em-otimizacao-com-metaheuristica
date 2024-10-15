@@ -9,15 +9,9 @@ from typing import List, Tuple
 
 import numpy as np
 
-from binpacksolver.utils import (
-    TabuStructure,
-    check_end,
-    generate_container,
-    generate_solution,
-    merge_np,
-    theoretical_minimum,
-    valid_solution,
-)
+from binpacksolver.utils import (TabuStructure, check_end, generate_container,
+                                 generate_solution, merge_np,
+                                 theoretical_minimum, valid_solution)
 
 
 def __pack_items(

@@ -10,13 +10,8 @@ from typing import List, Tuple
 
 import numpy as np
 
-from binpacksolver.utils import (
-    check_end,
-    evaluate_solution,
-    fitness,
-    generate_solution,
-    theoretical_minimum,
-)
+from binpacksolver.utils import (check_end, evaluate_solution, fitness,
+                                 generate_solution, theoretical_minimum)
 
 
 def __perturb_solution(

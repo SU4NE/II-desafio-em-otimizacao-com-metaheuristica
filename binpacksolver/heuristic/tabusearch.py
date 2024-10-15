@@ -8,14 +8,9 @@ from typing import List, Tuple
 
 import numpy as np
 
-from binpacksolver.utils import (
-    TabuStructure,
-    check_end,
-    container_insert,
-    fitness,
-    generate_solution,
-    theoretical_minimum,
-)
+from binpacksolver.utils import (TabuStructure, check_end, container_insert,
+                                 fitness, generate_solution,
+                                 theoretical_minimum)
 
 
 def __operations(

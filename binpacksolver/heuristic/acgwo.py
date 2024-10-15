@@ -10,14 +10,10 @@ import time
 
 import numpy as np
 
-from binpacksolver.utils import (
-    check_end,
-    fitness,
-    generate_initial_matrix_population,
-    generate_solution,
-    repair_solution,
-    theoretical_minimum,
-)
+from binpacksolver.utils import (check_end, fitness,
+                                 generate_initial_matrix_population,
+                                 generate_solution, repair_solution,
+                                 theoretical_minimum)
 
 
 def chaotic_map(t: int, max_value: int) -> np.ndarray:

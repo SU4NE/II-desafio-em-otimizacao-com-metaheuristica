@@ -9,15 +9,9 @@ from typing import List, Tuple
 
 import numpy as np
 
-from binpacksolver.utils import (
-    best_fit_decreasing,
-    check_end,
-    find_best_solution,
-    first_fit,
-    fitness,
-    has_common_elements,
-    theoretical_minimum,
-)
+from binpacksolver.utils import (best_fit_decreasing, check_end,
+                                 find_best_solution, first_fit, fitness,
+                                 has_common_elements, theoretical_minimum)
 
 
 def __initialize_population(

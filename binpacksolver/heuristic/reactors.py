@@ -4,13 +4,9 @@ from typing import List, Tuple
 
 import numpy as np
 
-from binpacksolver.utils import (
-    check_end,
-    fitness,
-    generate_initial_matrix_population,
-    repair_solution,
-    theoretical_minimum,
-)
+from binpacksolver.utils import (check_end, fitness,
+                                 generate_initial_matrix_population,
+                                 repair_solution, theoretical_minimum)
 
 
 def fission(particles):

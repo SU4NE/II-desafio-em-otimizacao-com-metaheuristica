@@ -4,15 +4,10 @@ from typing import Tuple
 
 import numpy as np
 
-from binpacksolver.utils import (
-    check_end,
-    fitness,
-    generate_initial_matrix_population,
-    generate_solution,
-    local_search,
-    repair_solution,
-    theoretical_minimum,
-)
+from binpacksolver.utils import (check_end, fitness,
+                                 generate_initial_matrix_population,
+                                 generate_solution, local_search,
+                                 repair_solution, theoretical_minimum)
 
 
 def crossover(parent1: np.ndarray, parent2: np.ndarray, c: int) -> np.ndarray:

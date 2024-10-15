@@ -11,7 +11,8 @@ from typing import Any, List, Tuple, Union
 
 import numpy as np
 
-from .online_algorithms import best_fit_decreasing, first_fit, first_fit_decreasing
+from .online_algorithms import (best_fit_decreasing, first_fit,
+                                first_fit_decreasing)
 
 
 def generate_container(solution: List[np.ndarray], c: int) -> List[int]:
@@ -481,7 +482,7 @@ def repair_solution(
             generate_solution(np.array(modify), c, VALID=True)[0],
         )
     else:
-        solution = np.random.shuffle(solution)
+        solution = np.random.permutation(solution)
 
     if isinstance(solution, list):
         return np.concatenate(solution)

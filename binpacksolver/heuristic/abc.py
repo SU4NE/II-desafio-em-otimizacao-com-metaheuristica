@@ -7,16 +7,11 @@ from typing import List, Tuple
 
 import numpy as np
 
-from binpacksolver.utils import (
-    check_end,
-    fitness,
-    generate_initial_matrix_population,
-    generate_solution,
-    local_search,
-    repair_solution,
-    theoretical_minimum,
-    tournament_roulette,
-)
+from binpacksolver.utils import (check_end, fitness,
+                                 generate_initial_matrix_population,
+                                 generate_solution, local_search,
+                                 repair_solution, theoretical_minimum,
+                                 tournament_roulette)
 
 
 def __employed_bees(

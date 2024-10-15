@@ -11,14 +11,10 @@ from typing import List, Tuple
 
 import numpy as np
 
-from binpacksolver.utils import (
-    check_end,
-    fitness,
-    generate_initial_matrix_population,
-    generate_solution,
-    repair_solution,
-    theoretical_minimum,
-)
+from binpacksolver.utils import (check_end, fitness,
+                                 generate_initial_matrix_population,
+                                 generate_solution, repair_solution,
+                                 theoretical_minimum)
 
 
 def jaya_optimization(
@@ -60,9 +56,9 @@ def jaya_optimization(
         array_base, c, population_size, VALID=True
     )
     best_idx = np.argmin(pop_matrix[:, -1])
+    best_fit = pop_matrix[best_idx, -1]
 
     # Initial variables
-    best_fit = pop_matrix[best_idx, -1]
     th = theoretical_minimum(array_base, c)
     it = 0
     start = time.time()
