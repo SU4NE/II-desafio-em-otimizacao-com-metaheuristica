@@ -11,8 +11,7 @@ from typing import Any, List, Tuple, Union
 
 import numpy as np
 
-from .online_algorithms import (best_fit_decreasing, first_fit,
-                                first_fit_decreasing)
+from .online_algorithms import best_fit_decreasing, first_fit, first_fit_decreasing
 
 
 def generate_container(solution: List[np.ndarray], c: int) -> List[int]:

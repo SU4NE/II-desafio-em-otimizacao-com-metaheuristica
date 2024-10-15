@@ -10,8 +10,13 @@ from typing import List, Tuple
 
 import numpy as np
 
-from binpacksolver.utils import (check_end, evaluate_solution, fitness,
-                                 generate_solution, theoretical_minimum)
+from binpacksolver.utils import (
+    check_end,
+    evaluate_solution,
+    fitness,
+    generate_solution,
+    theoretical_minimum,
+)
 
 
 def __perturb_solution(
@@ -86,7 +91,6 @@ def __accept_solution(new_fitness: int, best_fit: int, temperature: float):
     )
 
 
-# pylint: disable=R0913
 def __operations(
     best_fit: int,
     solution: List[np.ndarray],
@@ -193,6 +197,3 @@ def simulated_annealing(
         temperature *= alpha
 
     return best_solution, fitness(best_solution, c)
-
-
-# pylint: enable=R0913

@@ -8,9 +8,14 @@ from typing import List, Tuple
 
 import numpy as np
 
-from binpacksolver.utils import (TabuStructure, check_end, container_insert,
-                                 fitness, generate_solution,
-                                 theoretical_minimum)
+from binpacksolver.utils import (
+    TabuStructure,
+    check_end,
+    container_insert,
+    fitness,
+    generate_solution,
+    theoretical_minimum,
+)
 
 
 def __operations(
@@ -56,7 +61,6 @@ def __operations(
     return new_solution, new_fit
 
 
-# pylint: disable=R0913
 def tabu_search(
     array_base: np.ndarray,
     c: int,
@@ -99,6 +103,3 @@ def tabu_search(
         it += 1
 
     return solution, best_fit
-
-
-# pylint: enable=R0913

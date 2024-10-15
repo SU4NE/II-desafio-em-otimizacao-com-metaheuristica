@@ -9,9 +9,15 @@ from typing import List, Tuple
 
 import numpy as np
 
-from binpacksolver.utils import (TabuStructure, check_end, generate_container,
-                                 generate_solution, merge_np,
-                                 theoretical_minimum, valid_solution)
+from binpacksolver.utils import (
+    TabuStructure,
+    check_end,
+    generate_container,
+    generate_solution,
+    merge_np,
+    theoretical_minimum,
+    valid_solution,
+)
 
 
 def __pack_items(
@@ -110,7 +116,6 @@ def __initialize_containers(
     return n, m, containers, sum_container
 
 
-# pylint: disable=R0913, R0914, R1702
 def __find_best_move(
     solution: List[np.ndarray],
     containers: List[int],
@@ -342,6 +347,3 @@ def consistent_neighborhood_search(
             num_bins += 1
 
     return current_solution, len(current_solution)
-
-
-# pylint: enable=R0913, R0914, R1702

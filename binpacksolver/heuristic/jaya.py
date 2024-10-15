@@ -11,13 +11,16 @@ from typing import List, Tuple
 
 import numpy as np
 
-from binpacksolver.utils import (check_end, fitness,
-                                 generate_initial_matrix_population,
-                                 generate_solution, repair_solution,
-                                 theoretical_minimum)
+from binpacksolver.utils import (
+    check_end,
+    fitness,
+    generate_initial_matrix_population,
+    generate_solution,
+    repair_solution,
+    theoretical_minimum,
+)
 
 
-# pylint: disable=R0914
 def jaya_optimization(
     array_base: np.ndarray,
     c: int,
@@ -104,6 +107,3 @@ def jaya_optimization(
         generate_solution(pop_matrix[best_idx, :-1], c, VALID=True)[0],
         pop_matrix[best_idx, -1],
     )
-
-
-# pylint: enable=R0914

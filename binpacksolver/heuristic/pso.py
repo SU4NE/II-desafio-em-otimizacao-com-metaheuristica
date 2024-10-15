@@ -15,13 +15,16 @@ from typing import List, Tuple
 
 import numpy as np
 
-from binpacksolver.utils import (check_end, fitness,
-                                 generate_initial_population,
-                                 generate_solution, repair_solution,
-                                 theoretical_minimum)
+from binpacksolver.utils import (
+    check_end,
+    fitness,
+    generate_initial_population,
+    generate_solution,
+    repair_solution,
+    theoretical_minimum,
+)
 
 
-# pylint: disable=R0913, R0914
 def particle_swarm_optimization(
     array_base: np.ndarray,
     c: int,
@@ -111,6 +114,3 @@ def particle_swarm_optimization(
         it += 1
 
     return generate_solution(global_best_position, c, VALID=True)[0], global_best_score
-
-
-# pylint: enable=R0913, R0914

@@ -9,9 +9,15 @@ from typing import List, Tuple
 
 import numpy as np
 
-from binpacksolver.utils import (best_fit_decreasing, check_end,
-                                 find_best_solution, first_fit, fitness,
-                                 has_common_elements, theoretical_minimum)
+from binpacksolver.utils import (
+    best_fit_decreasing,
+    check_end,
+    find_best_solution,
+    first_fit,
+    fitness,
+    has_common_elements,
+    theoretical_minimum,
+)
 
 
 def __initialize_population(
@@ -151,7 +157,6 @@ def __controlled_replacement(
     return heapq.nlargest(n_pop, population, key=fitness)
 
 
-# pylint: disable=R0913 R0914
 def genetic_algorithm_cgt(
     items: np.ndarray,
     c: int,
@@ -226,6 +231,3 @@ def genetic_algorithm_cgt(
         it += 1
 
     return best_solution, fitness(best_solution)
-
-
-# pylint: enable=R0913 R0914

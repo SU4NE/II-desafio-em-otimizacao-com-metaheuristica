@@ -12,13 +12,16 @@ from typing import List, Tuple
 
 import numpy as np
 
-from binpacksolver.utils import (check_end, fitness,
-                                 generate_initial_matrix_population,
-                                 generate_solution, repair_solution,
-                                 theoretical_minimum)
+from binpacksolver.utils import (
+    check_end,
+    fitness,
+    generate_initial_matrix_population,
+    generate_solution,
+    repair_solution,
+    theoretical_minimum,
+)
 
 
-# pylint: disable=R0913, R0914
 def update_student(
     solution: np.ndarray,
     best_solution: np.ndarray,
@@ -145,6 +148,3 @@ def student_psychology_based_optimization(
         generate_solution(students_matrix[best_idx, :-1], c, VALID=True)[0],
         students_matrix[best_idx, -1],
     )
-
-
-# pylint: enable=R0913, R0914

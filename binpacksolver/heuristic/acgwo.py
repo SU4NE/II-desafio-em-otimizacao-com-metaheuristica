@@ -10,10 +10,14 @@ import time
 
 import numpy as np
 
-from binpacksolver.utils import (check_end, fitness,
-                                 generate_initial_matrix_population,
-                                 generate_solution, repair_solution,
-                                 theoretical_minimum)
+from binpacksolver.utils import (
+    check_end,
+    fitness,
+    generate_initial_matrix_population,
+    generate_solution,
+    repair_solution,
+    theoretical_minimum,
+)
 
 
 def chaotic_map(t: int, max_value: int) -> np.ndarray:
@@ -35,7 +39,6 @@ def chaotic_map(t: int, max_value: int) -> np.ndarray:
     return np.sin(np.pi * t / max_value)
 
 
-# pylint: disable=R0913, R0914
 def update_position(
     position: np.ndarray,
     alpha: np.ndarray,
@@ -183,6 +186,3 @@ def caotic_grey_wolf_optimization(
             best_alpha = wolves_matrix[best_idx, :-1]
 
     return generate_solution(best_alpha, c, VALID=True)[0], best_fit
-
-
-# pylint: enable=R0913, R0914
