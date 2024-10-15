@@ -163,7 +163,7 @@ def multi_verse_optimizer(
     it = 0
     start = time.time()
 
-    max_iterations = max_it if max_it is not None else 10000
+    max_iterations = max_it if max_it is not None else max((time_max * 1e8) // population_size, 100)
 
     while check_end(th, best_fitness, time_max, start, time.time(), max_it, it):
         it += 1
