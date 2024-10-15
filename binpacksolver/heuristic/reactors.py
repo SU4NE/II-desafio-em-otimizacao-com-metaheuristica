@@ -9,7 +9,7 @@ from binpacksolver.utils import (check_end, core_refurbishment, enrichment,
                                  theoretical_minimum)
 
 
-def __operations(reactors, elite):
+def __operations(reactors, elite, c):
     """_summary_
 
     Parameters
@@ -27,12 +27,12 @@ def __operations(reactors, elite):
     for reactor in reactors:
         reactor_type, particles = reactor["type"], reactor["particles"]
         if reactor_type == 0:
-            fusion(particles, elite)
+            fusion(particles, elite, c)
         else:
             fission(particles)
 
     core_refurbishment(reactors, elite)
-    enrichment(elite)
+    enrichment(elite, c)
 
     return elite[0]
 
@@ -108,6 +108,6 @@ def power_plant(
     time_start = time.time()
 
     while check_end(th, elite[0], time_max, time_start, None, max_it, 0):
-        __operations(reactors, elite)
+        __operations(reactors, elite, c)
 
     return elite[0]
