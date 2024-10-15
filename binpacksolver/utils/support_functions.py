@@ -222,7 +222,7 @@ def theoretical_minimum(solution: np.ndarray, c: int) -> int:
 
 
 def tournament_roulette(
-    population: List[int], gama: float = 1.8, tour_size: int = 3
+    population: Union[List[int], np.ndarray], gama: float = 1.8, tour_size: int = 3
 ) -> int:
     """
     Selects the index of an individual from the population using a combination
@@ -230,8 +230,8 @@ def tournament_roulette(
 
     Parameters
     ----------
-    population : List[int]
-        A list representing the population (e.g., fitness values).
+    population : Union[List[int], np.ndarray]
+        A list of fitness values or a 2D matrix where the fitness is in the last column.
     gama : float, optional
         The parameter gama that adjusts the probability distribution in the
         roulette selection, by default 1.8.
@@ -244,15 +244,17 @@ def tournament_roulette(
     int
         The index of the winning individual in the original population.
     """
-    tour_idxs = random.sample(range(len(population)), tour_size)
-    tournament = [population[i] for i in tour_idxs]
+    if isinstance(population, np.ndarray) and population.ndim == 2:
+        fitness_values = population[:, -1]
+    else:
+        fitness_values = population
+
+    tour_idxs = random.sample(range(len(fitness_values)), tour_size)
+    tournament = [fitness_values[i] for i in tour_idxs]
     tour_sum = sum(v**gama for v in tournament)
-
     beta = [(v**gama) / tour_sum for v in tournament]
-
     winner_value = random.choices(tournament, weights=beta, k=1)[0]
-    winner_index = tour_idxs[tournament.index(winner_value)]
-    return winner_index
+    return tour_idxs[tournament.index(winner_value)]
 
 
 def find_best_solution(solutions):
@@ -486,3 +488,37 @@ def repair_solution(
         return np.concatenate(solution)
 
     return np.array(solution)
+
+
+def local_search(
+    current_solution: np.ndarray, c: int, min_value: int, max_value: int
+) -> np.ndarray:
+    """
+    Executes a local search by perturbing a random dimension of the solution.
+
+    Parameters
+    ----------
+    current_solution : np.ndarray
+        The current solution to be perturbed.
+    c : int
+        Maximum container capacity (used as a boundary for some variables if needed).
+    min_value : int
+        Minimum allowable value for any dimension of the solution.
+    max_value : int
+        Maximum allowable value for any dimension of the solution.
+
+    Returns
+    -------
+    np.ndarray
+        The perturbed solution after the local search.
+    """
+    perturbed_solution = current_solution.copy()
+    dim = current_solution.shape[0]
+    index_to_modify = np.random.randint(dim)
+    random_factor = np.random.uniform(-1, 1)
+    comparison_index = np.random.randint(dim)
+    new_value = current_solution[index_to_modify] + random_factor * (
+        current_solution[index_to_modify] - current_solution[comparison_index]
+    )
+    perturbed_solution[index_to_modify] = np.clip(new_value, min_value, max_value)
+    return repair_solution(current_solution, perturbed_solution, c)

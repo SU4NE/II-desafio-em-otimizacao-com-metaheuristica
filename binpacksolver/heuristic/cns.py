@@ -1,3 +1,8 @@
+"""
+Module for implementing Consistent Neighborhood Search (CNS)
+and Tabu Search algorithms for bin packing optimization problems.
+"""
+
 import random
 import time
 from typing import List, Tuple
@@ -6,7 +11,7 @@ import numpy as np
 
 from binpacksolver.utils import (TabuStructure, check_end, generate_container,
                                  generate_solution, merge_np,
-                                 theoretical_minimum)
+                                 theoretical_minimum, valid_solution)
 
 
 def __pack_items(
@@ -30,20 +35,7 @@ def __pack_items(
         A tuple containing the updated bin and the remaining unplaced items.
     """
     combined_items = merge_np(np.concatenate(unplaced_items), bin_items)
-    remaining_items = []
-    used_capacity = 0
-    remaining_items.append([])
-
-    for item in combined_items:
-        if used_capacity + item <= c:
-            remaining_items[-1].append(item)
-            used_capacity += item
-        else:
-            remaining_items[-1] = np.array(remaining_items[-1], dtype=int)
-            used_capacity = item
-            remaining_items.append([item])
-
-    remaining_items[-1] = np.array(remaining_items[-1], dtype=int)
+    remaining_items = valid_solution(combined_items, c)
     return remaining_items[-1], remaining_items[:-1] if len(remaining_items) > 1 else []
 
 
@@ -79,19 +71,25 @@ def __descent(
         for i, bin_ in enumerate(bins):
             bins[i], unplaced_items = __pack_items(bin_, unplaced_items, c)
             if len(unplaced_items) < 3:
+                if len(unplaced_items) > 1:
+                    unplaced_items, _ = generate_solution(
+                        np.concatenate(unplaced_items), c, FF=True
+                    )
                 bins.extend(unplaced_items)
                 return bins, []
     return bins, unplaced_items
 
 
 def __initialize_containers(
-    solution: List[np.ndarray], c: int
+    current_solution: List[np.ndarray], solution: List[np.ndarray], c: int
 ) -> Tuple[int, int, List[int], int]:
     """
     Initialize container values and sums for bin packing.
 
     Parameters
     ----------
+    current_solution : List[np.ndarray]
+        The current solution of bins with placed items.
     solution : List[np.ndarray]
         The list of items placed into bins.
     c : int
@@ -105,8 +103,8 @@ def __initialize_containers(
         containers: List of bin capacities,
         sum_container: Sum of capacities used by unplaced items.
     """
-    n = len([bin_ for bin_ in solution if bin_ is not None])  # Number of filled bins
-    m = len(solution)  # Total number of bins (including unplaced items)
+    n = len(current_solution)
+    m = len(solution)
     containers = generate_container(solution, c)
     sum_container = sum(containers[n:])
     return n, m, containers, sum_container
@@ -192,7 +190,9 @@ def __tabucns(
     tabu: TabuStructure = TabuStructure(len(current_solution) // 2)
     solution = current_solution.copy()
     solution.extend(unplaced_items)
-    n, m, containers, sum_container = __initialize_containers(solution, c)
+    n, m, containers, sum_container = __initialize_containers(
+        current_solution, solution, c
+    )
     time_start = time.time()
     while check_end(0, 1, max_attempts_time, time_start, time.time(), max_attempts, it):
         it += 1
@@ -254,15 +254,24 @@ def __operations(
         Updated solution and remaining unplaced items after applying operations.
     """
     it = 0
-    while check_end(partial_sum, current_sum, None, None, None, max_attempts, it):
+    start = time.time()
+    while check_end(
+        partial_sum,
+        current_sum,
+        max_attempts_time,
+        start,
+        time.time(),
+        max_attempts,
+        it,
+    ):
         it += 1
         partial_solution, unplaced_items = __tabucns(
             partial_solution, unplaced_items, c, max_attempts, max_attempts_time
         )
-        partial_solution, unplaced_items = __descent(
-            partial_solution, unplaced_items, c, max_attempts_time
-        )
         partial_sum = sum(box.sum() for box in partial_solution)
+        partial_solution, unplaced_items = __descent(
+            partial_solution, unplaced_items, c, max_attempts=min(max_attempts, 100)
+        )
     return partial_solution, unplaced_items
 
 
@@ -271,7 +280,7 @@ def consistent_neighborhood_search(
     c: int,
     time_max: float = 60,
     max_it: int = None,
-    max_attempts: int = 10,
+    max_attempts: int = 100000,
     max_attempts_time: int = 1,
 ) -> Tuple[List[np.ndarray], int]:
     """
@@ -310,10 +319,10 @@ def consistent_neighborhood_search(
     current_sum = array_base.sum()
     num_bins = len(current_solution)
     start = time.time()
-
     while check_end(
         th, len(current_solution), time_max, start, time.time(), max_it, it
     ):
+        it += 1
         num_bins -= 1
         unplaced_items = current_solution[num_bins:]
         partial_solution = current_solution[:num_bins]
@@ -327,11 +336,10 @@ def consistent_neighborhood_search(
             max_attempts,
             max_attempts_time,
         )
-        if len(unplaced_items) == 0:
+        if len(unplaced_items) == 0 and len(current_solution) > len(aux_solution):
             current_solution = aux_solution
         else:
             num_bins += 1
-        it += 1
 
     return current_solution, len(current_solution)
 
