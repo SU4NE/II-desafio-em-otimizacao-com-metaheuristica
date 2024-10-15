@@ -9,8 +9,9 @@ from .support_functions import (bestfit_population, bw_population,
                                 generate_container,
                                 generate_initial_matrix_population,
                                 generate_initial_population, generate_solution,
-                                repair_solution, theoretical_minimum,
-                                tournament_roulette, valid_solution,local_search)
+                                local_search, repair_solution,
+                                theoretical_minimum, tournament_roulette,
+                                valid_solution)
 from .tabu_cns import TabuCNS
 from .utils import check_end, has_common_elements, merge_np
 
@@ -39,5 +40,5 @@ __all__ = [
     "best_fit_decreasing",
     "repair_solution",
     "generate_initial_matrix_population",
-    "local_search"
+    "local_search",
 ]

@@ -218,7 +218,7 @@ def tournament_roulette(
         fitness_values = population[:, -1]
     else:
         fitness_values = population
-        
+
     tour_idxs = random.sample(range(len(fitness_values)), tour_size)
     tournament = [fitness_values[i] for i in tour_idxs]
     tour_sum = sum(v**gama for v in tournament)
@@ -488,7 +488,10 @@ def generate_initial_matrix_population(
     pop_bins = np.vstack([np.concatenate(lst) for lst in pop_bins]).astype(int)
     return np.hstack((pop_bins, fitness_values[:, np.newaxis]))
 
-def local_search(current_solution: np.ndarray, c: int, min_value: int, max_value: int) -> np.ndarray:
+
+def local_search(
+    current_solution: np.ndarray, c: int, min_value: int, max_value: int
+) -> np.ndarray:
     """
     Executes a local search by perturbing a random dimension of the solution.
 
@@ -502,7 +505,7 @@ def local_search(current_solution: np.ndarray, c: int, min_value: int, max_value
         Minimum allowable value for any dimension of the solution.
     max_value : int
         Maximum allowable value for any dimension of the solution.
-        
+
     Returns
     -------
     np.ndarray
@@ -512,7 +515,9 @@ def local_search(current_solution: np.ndarray, c: int, min_value: int, max_value
     dim = current_solution.shape[0]
     index_to_modify = np.random.randint(dim)
     random_factor = np.random.uniform(-1, 1)
-    comparison_index = np.random.randint(dim) 
-    new_value = current_solution[index_to_modify] + random_factor * (current_solution[index_to_modify] - current_solution[comparison_index])
+    comparison_index = np.random.randint(dim)
+    new_value = current_solution[index_to_modify] + random_factor * (
+        current_solution[index_to_modify] - current_solution[comparison_index]
+    )
     perturbed_solution[index_to_modify] = np.clip(new_value, min_value, max_value)
     return repair_solution(current_solution, perturbed_solution, c)

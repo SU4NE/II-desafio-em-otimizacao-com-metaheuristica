@@ -7,10 +7,16 @@ from typing import List, Tuple
 
 import numpy as np
 
-from binpacksolver.utils import (check_end, local_search,generate_solution, fitness, repair_solution,
-                                 theoretical_minimum, tournament_roulette, generate_initial_matrix_population)
+from binpacksolver.utils import (check_end, fitness,
+                                 generate_initial_matrix_population,
+                                 generate_solution, local_search,
+                                 repair_solution, theoretical_minimum,
+                                 tournament_roulette)
 
-def __employed_bees(bees_matrix: np.ndarray, c: int, min_value: int, max_value: int) -> np.ndarray:
+
+def __employed_bees(
+    bees_matrix: np.ndarray, c: int, min_value: int, max_value: int
+) -> np.ndarray:
     """
     Updates the solutions of the employed bees using local search.
 
@@ -29,18 +35,26 @@ def __employed_bees(bees_matrix: np.ndarray, c: int, min_value: int, max_value: 
     for i in range(bees_matrix.shape[0]):
         new_solution = local_search(bees_matrix[i, :-2].copy(), c, min_value, max_value)
         new_fit = fitness(new_solution, c)
-        
+
         if new_fit < bees_matrix[i, -2]:
             bees_matrix[i, :-2] = new_solution
             bees_matrix[i, -2] = new_fit
             bees_matrix[i, -1] = 0
         else:
             bees_matrix[i, -1] += 1
-    
+
     return bees_matrix
 
 
-def __onlooker_bees(bees_matrix: np.ndarray, c: int, gama: float, onlooker: int, min_value: int, max_value: int, tournament_size: int = 3) -> np.ndarray:
+def __onlooker_bees(
+    bees_matrix: np.ndarray,
+    c: int,
+    gama: float,
+    onlooker: int,
+    min_value: int,
+    max_value: int,
+    tournament_size: int = 3,
+) -> np.ndarray:
     """
     Updates the solutions of the onlooker bees based on roulette wheel selection.
 
@@ -61,12 +75,14 @@ def __onlooker_bees(bees_matrix: np.ndarray, c: int, gama: float, onlooker: int,
         Updated solution matrix.
     """
     fitness_values = 1 / (bees_matrix[:, -1] + 1e-6)
-    probabilities = fitness_values ** gama / np.sum(fitness_values ** gama)
+    probabilities = fitness_values**gama / np.sum(fitness_values**gama)
 
     for _ in range(onlooker):
         selected_idx = tournament_roulette(bees_matrix[:, :-1], tournament_size)
         selected_idx = np.random.choice(range(bees_matrix.shape[0]), p=probabilities)
-        new_solution = local_search(bees_matrix[selected_idx, :-2].copy(), c, min_value, max_value)
+        new_solution = local_search(
+            bees_matrix[selected_idx, :-2].copy(), c, min_value, max_value
+        )
         new_fit = fitness(new_solution, c)
 
         if new_fit < bees_matrix[selected_idx, -2]:
@@ -75,7 +91,7 @@ def __onlooker_bees(bees_matrix: np.ndarray, c: int, gama: float, onlooker: int,
             bees_matrix[selected_idx, -1] = 0
         else:
             bees_matrix[selected_idx, -1] += 1
-    
+
     return bees_matrix
 
 
@@ -101,7 +117,11 @@ def __scout_bees(bees_matrix: np.ndarray, c: int, scout_limit: int = 10) -> np.n
         if bees_matrix[i, -1] > scout_limit:
             shuffled_solution = bees_matrix[i, :-2].copy()
             np.random.shuffle(shuffled_solution)
-            new_solution = repair_solution(bees_matrix[i, :-2], shuffled_solution[:len(shuffled_solution[:-2]) // 2], c)
+            new_solution = repair_solution(
+                bees_matrix[i, :-2],
+                shuffled_solution[: len(shuffled_solution[:-2]) // 2],
+                c,
+            )
             new_fit = fitness(new_solution, c)
             bees_matrix[i, :-2] = new_solution
             bees_matrix[i, -2] = new_fit
@@ -109,7 +129,7 @@ def __scout_bees(bees_matrix: np.ndarray, c: int, scout_limit: int = 10) -> np.n
 
     return bees_matrix
 
-# pylint: disable=R0913 R0914
+
 def artificial_bee_colony(
     array_base: np.ndarray,
     c: int,
@@ -150,15 +170,19 @@ def artificial_bee_colony(
     """
     min_value = array_base.min()
     max_value = array_base.max()
-    
-    bees_matrix = generate_initial_matrix_population(array_base.copy(), c, employed, VALID=True)
-    bees_matrix = np.hstack((bees_matrix, np.zeros((bees_matrix.shape[0], 1), dtype=int)))
-    
+
+    bees_matrix = generate_initial_matrix_population(
+        array_base.copy(), c, employed, VALID=True
+    )
+    bees_matrix = np.hstack(
+        (bees_matrix, np.zeros((bees_matrix.shape[0], 1), dtype=int))
+    )
+
     # Identify the best solution in the initial population
     best_idx = np.argmin(bees_matrix[:, -2])
     best_fit = bees_matrix[best_idx, -2]
     best_solution = bees_matrix[best_idx, :-2]
-    
+
     # Initial variables
     onlooker = min(onlooker, employed)
     th_min = theoretical_minimum(array_base, c)
@@ -167,8 +191,10 @@ def artificial_bee_colony(
 
     while check_end(th_min, best_fit, time_max, time_start, time.time(), max_it, it):
         bees_matrix = __employed_bees(bees_matrix, c, min_value, max_value)
-        bees_matrix = __onlooker_bees(bees_matrix, c, gama, onlooker, min_value, max_value, tournament_size)
-        bees_matrix = __scout_bees(bees_matrix,c, scout)
+        bees_matrix = __onlooker_bees(
+            bees_matrix, c, gama, onlooker, min_value, max_value, tournament_size
+        )
+        bees_matrix = __scout_bees(bees_matrix, c, scout)
 
         # Find the best solution
         best_idx = np.argmin(bees_matrix[:, -2])
@@ -177,6 +203,3 @@ def artificial_bee_colony(
         it += 1
 
     return generate_solution(best_solution, c, VALID=True)[0], best_fit
-
-
-# pylint: enable=R0913 R0914
