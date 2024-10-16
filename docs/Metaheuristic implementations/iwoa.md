@@ -23,7 +23,7 @@ Os parâmetros que apresentaram melhor desempenho no IWOA foram:
 - **Movimento Linear e Espiral**: Probabilidade igual para ambos os tipos de movimentação
 
 ### **Resultados**
-O **IWOA** ficou entre as [Top 6](https://github.com/SU4NE/II-desafio-em-otimizacao-com-metaheuristica/tree/main/docs/Graphics/Top6) metaheurísticas testadas, mostrando resultados sólidos e consistentes, com boas soluções encontradas em várias instâncias de diferentes tamanhos. Embora o objetivo inicial fosse apenas explorar a heurística, o desempenho foi melhor do que o esperado.
+O **IWOA** ficou entre as [Top 3](https://github.com/SU4NE/II-desafio-em-otimizacao-com-metaheuristica/tree/main/docs/Graphics/top3) metaheurísticas testadas, mostrando resultados sólidos e consistentes, com boas soluções encontradas em várias instâncias de diferentes tamanhos. Embora o objetivo inicial fosse apenas explorar a heurística, o desempenho foi melhor do que o esperado.
 
 ### **Discussões**
 O IWOA apresentou uma excelente capacidade de explorar o espaço de busca e refinar soluções promissoras nas fases finais da execução. A adaptação dinâmica dos fatores que controlam o movimento da baleia foi crucial para o sucesso do algoritmo. Entretanto, em instâncias maiores, o tempo de execução poderia ser otimizado, principalmente pela complexidade do movimento espiral.
