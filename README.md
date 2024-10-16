@@ -28,11 +28,12 @@ O Problema de Empacotamento Unidimensional (ou bin packing) é um clássico prob
 
 ### Dados:
 [![Static Badge](https://img.shields.io/badge/Edital%20do%20Desafio%20-%20PDF%20-%20red?style=for-the-badge&logo=files&logoColor=red
-)](https://github.com/Lixomensch/I-desafio-em-otimizacao-com-metaheuristica/blob/main/Files/Edital/edital_Idesafio_Otimização%20com%20metaheurísticas.pdf)
+)](https://github.com/SU4NE/II-desafio-em-otimizacao-com-metaheuristica/blob/main/docs/Edital/Edital%20do%20II%20Desafio%20de%20Otimiza%C3%A7%C3%A3o%20-%20Problema%20de%20Empacotamento%20Unidimensional%202024.pdf)
 [![Static Badge](https://img.shields.io/badge/Instâncias%20Utilizadas%20-%20txt%20-%20red?style=for-the-badge&logo=files&logoColor=red
-)](https://github.com/Lixomensch/I-desafio-em-otimizacao-com-metaheuristica/tree/main/dataset)
+)](https://github.com/SU4NE/II-desafio-em-otimizacao-com-metaheuristica/blob/main/data/dados.zip)
 [![Static Badge](https://img.shields.io/badge/Testes%20Realizados%20-%20txt%20-%20red?style=for-the-badge&logo=files&logoColor=red
-)](https://github.com/Joao-vpf/I-desafio-em-otimizacao-com-metaheuristica/tree/main/dataset_test)
+)](https://github.com/SU4NE/II-desafio-em-otimizacao-com-metaheuristica/tree/main/docs/Benchmark)
+
 ### Hardware e Software Utilizados:
 
 #### Software:
