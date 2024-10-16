@@ -259,7 +259,7 @@ class Solver:
                 print(f"Best solution {solution}")
 
             return solution, fit
-        
+
         remaining_time = self.time_max
         best_solution = None
         best_fit = None
@@ -278,8 +278,8 @@ class Solver:
 
                     if self.verbose >= 1:
                         print(
-                            f"Starting heuristic: {heuristic_name} "+ 
-                            f"(Allocated Time: {allocated_time:.4f}s)"
+                            f"Starting heuristic: {heuristic_name} "
+                            + f"(Allocated Time: {allocated_time:.4f}s)"
                         )
 
                     solution, fit, execution_time = self.run_heuristic(
