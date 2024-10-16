@@ -1,3 +1,8 @@
+"""
+Bat Algorithm (BA) for solving the Bin Packing Problem (BPP), 
+using frequency, velocity, and loudness to evolve solutions.
+"""
+
 import time
 from typing import Tuple
 

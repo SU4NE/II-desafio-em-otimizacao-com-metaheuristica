@@ -1,4 +1,7 @@
-"""_summary_"""
+"""
+Imperialist Competitive Algorithm (ICA) for solving the Bin Packing Problem (BPP), 
+using assimilation, revolution, and competition between empires to evolve solutions.
+"""
 
 import time
 from typing import List, Tuple
