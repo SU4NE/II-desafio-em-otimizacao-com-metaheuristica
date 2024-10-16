@@ -95,6 +95,7 @@ Para verificar se a instalação foi bem-sucedida, você pode tentar importar o 
 import binpacksolver
 ```
 
+OBS: Em caso de erro no tabu_structure-0.1.0 baixar a versão para o seu sistema operacional pelo release e fazer pip.
 Se não houver erros, a instalação foi concluída com sucesso.
 
 ### Metaheurísticas Testadas:
