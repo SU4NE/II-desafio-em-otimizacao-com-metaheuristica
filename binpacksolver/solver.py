@@ -57,6 +57,10 @@ class Solver:
         - 1: Basic output showing heuristic execution.
         - 2: Detailed information for each heuristic.
         - 3: Full details including time allocation and execution time.
+    disable_allocation : bool, optional
+        If set to True, the solver will ignore the time allocation across heuristics
+        and will only execute the first heuristic in `priority_func` using the total
+        `time_max` value. Default is False.
 
     Attributes
     ----------
@@ -76,6 +80,8 @@ class Solver:
         Verbosity level of the solver.
     time_allocation : List[float]
         A list of time allocations for each heuristic based on `time_max`.
+    disable_allocation : bool
+        Controls whether the solver uses time allocation or runs only the first heuristic.
     """
 
     def __init__(self, capacity, weights, **kwargs):
@@ -100,6 +106,9 @@ class Solver:
             Maximum time allowed for the solver in seconds. Default is 60 seconds.
         verbose : int, optional
             Level of output verbosity. Ranges from 0 (no output) to 3 (full details).
+        disable_allocation : bool, optional
+            If set to True, disables the time allocation across heuristics and runs only the
+            first heuristic with the full `time_max`. Default is False.
         """
         self.capacity = capacity
         self.weights = weights
@@ -230,19 +239,12 @@ class Solver:
         Tuple[List[np.ndarray], int]
             The best solution found and its corresponding fit (minimum containers used).
         """
-        remaining_time = self.time_max
-        best_solution = None
-        best_fit = None
-        solution_train = self.weights.copy()
-        start_time = time.perf_counter()
-        total_allocated_time = sum(self.time_allocation)
-
         if self.disable_allocation:
             heuristic_name = self.priority_func[0].__name__.replace("_", " ").title()
             if self.verbose >= 1:
                 print(
-                    f"Starting heuristic: {heuristic_name}"
-                    + "with the entire time_max: {self.time_max:.4f}s"
+                    f"Starting heuristic: {heuristic_name} "
+                    + f"with the entire time_max: {self.time_max:.4f}s"
                 )
 
             solution, fit, execution_time = self.run_heuristic(
@@ -257,6 +259,13 @@ class Solver:
                 print(f"Best solution {solution}")
 
             return solution, fit
+        
+        remaining_time = self.time_max
+        best_solution = None
+        best_fit = None
+        solution_train = self.weights.copy()
+        start_time = time.perf_counter()
+        total_allocated_time = sum(self.time_allocation)
 
         with tqdm(total=total_allocated_time, desc="Running Heuristics") as pbar:
             if self.max_workers == 1:
@@ -269,8 +278,8 @@ class Solver:
 
                     if self.verbose >= 1:
                         print(
-                            f"Starting heuristic: {heuristic_name}"+ 
-                            "(Allocated Time: {allocated_time:.4f}s)"
+                            f"Starting heuristic: {heuristic_name} "+ 
+                            f"(Allocated Time: {allocated_time:.4f}s)"
                         )
 
                     solution, fit, execution_time = self.run_heuristic(
