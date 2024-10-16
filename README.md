@@ -8,10 +8,6 @@
   - [Hardware e Software Utilizados](#hardware-e-software-utilizados)
   - [Metaheurísticas Testadas](#metaheurísticas-testadas)
   - [Resultados](#resultados) 
-  - [Testes](#Testes)
-    - [Tempo com cada população](#Tempo-com-cada-população)
-    - [Moda da resposta em relação a cada população](#Moda-da-resposta-em-relação-a-cada-população)
-    - [Análise final dos testes](#Análise-final-dos-testes)
   - [Conclusão](#conclusão)
 
 ## Equipe:
@@ -46,3 +42,30 @@ O Problema de Empacotamento Unidimensional (ou bin packing) é um clássico prob
 - Ssd Nvme: 1Tb
 
 ### Metaheurísticas Testadas:
+
+Foram implementadas ao todo 19 metaheurísticas:
+- Artificial Bee Colony (ABC)
+- Bat Algorithm
+- Caotic Grey Wolf Optimization (CGWO)
+- Consistent Neighborhood Search (CNS)
+- Dragonfly Algorithm
+- Elephant Herding Optimization (EHO)
+- Genetic Algorithm CGT (GGA-CGT)
+- Gravitational Search Algorithm (GSA)
+- Imperialist Competitive Algorithm (ICA)
+- Improved Coati Optimization Algorithm (TnT-WCOA)
+- Improved Whale Optimization Algorithm (IWOA)
+- Jaya Optimization
+- Memetic Algorithm (MA)
+- Multi-Verse Optimizer (MVO)
+- Particle Swarm Optimization (PSO)
+- Simulated Annealing (SA)
+- Student Psychology Based Optimization (SPBO)
+- Symbiotic Organisms Search (SOS)
+- Tabu Search
+
+### Fundamentação Teórica e Implementação
+
+Cada metaheurística foi selecionada cuidadosamente com base em sua capacidade de equilibrar exploração e explotação nos diferentes espaços de busca apresentados pelo **Problema de Empacotamento Unidimensional (Bin Packing Problem - BPP)**. Ao longo do desenvolvimento, várias adaptações e ajustes finos foram introduzidos nas metaheurísticas para otimizar seu desempenho em diferentes instâncias do problema. Dada a ampla variedade de algoritmos testados, foi realizada uma análise criteriosa para filtrar as melhores abordagens com base em parâmetros de eficiência e qualidade das soluções. Neste documento, destacaremos as três heurísticas mais eficazes, considerando os resultados obtidos. No entanto, para garantir uma visão completa do trabalho, todas as outras metaheurísticas testadas, junto com suas implementações detalhadas, estarão disponíveis [aqui]().
+
+
