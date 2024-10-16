@@ -1,3 +1,9 @@
+"""
+Implementation of the Improved Coati Optimization Algorithm (TNTWCOA)
+for the Bin Packing Problem (BPP), using chaotic initialization and
+adaptive T-distribution for enhanced exploration and exploitation.
+"""
+
 import random
 import time
 from typing import Tuple

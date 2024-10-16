@@ -1,4 +1,7 @@
-"""_summary_"""
+"""
+Gravitational Search Algorithm (GSA) for solving the Bin Packing Problem (BPP), 
+using gravitational force and particle movement to evolve solutions.
+"""
 
 import time
 from typing import List, Tuple

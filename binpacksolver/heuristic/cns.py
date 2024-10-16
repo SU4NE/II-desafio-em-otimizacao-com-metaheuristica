@@ -314,7 +314,7 @@ def consistent_neighborhood_search(
     """
     th = theoretical_minimum(array_base, c)
     it = 0
-    current_solution, _ = generate_solution(array_base, c, BFD=True)
+    current_solution, _ = generate_solution(array_base, c, BFD=False)
     current_sum = array_base.sum()
     num_bins = len(current_solution)
     start = time.time()
