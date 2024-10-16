@@ -22,6 +22,7 @@
 - [Conclusão](#conclusão)
   - [Sobre o Solver](#sobre-o-solver)
   - [Funcionamento](#funcionamento)
+- [Observações](#observações)
 
 ## Equipe:
 <div>
@@ -211,3 +212,15 @@ O solver pode ser configurado para executar cada uma dessas heurísticas individ
 3. **Impressão de Resultados**: Dependendo do nível de verbosidade configurado, o solver imprime informações detalhadas sobre o desempenho de cada heurística.
 
 Esse módulo fornece uma abordagem escalável e personalizável para resolver problemas de otimização, podendo ser adaptado para diferentes configurações e necessidades futuras.
+
+# Observações
+
+É importante destacar os algoritmos **First-Fit (FF)**, **First-Fit Decreasing (FFD)** e **Best-Fit Decreasing (BFD)**, que são amplamente utilizados em problemas de alocação de binários.
+
+1. **First-Fit (FF)**: O algoritmo atribui cada item ao primeiro bin disponível que tenha espaço suficiente. Apesar de ser simples e rápido, pode não ser muito eficiente, pois tende a desperdiçar espaço em bins parcialmente preenchidos antes de verificar a necessidade de abrir um novo bin.
+
+2. **First-Fit Decreasing (FFD)**: Neste algoritmo, os itens são ordenados de forma decrescente em relação ao tamanho antes de aplicar o FF. Esse passo adicional melhora a eficiência, pois os itens maiores são alocados primeiro, resultando em um melhor aproveitamento do espaço disponível nos bins e reduzindo o número total de bins necessários em comparação com o FF.
+
+3. **Best-Fit Decreasing (BFD)**: Assim como o FFD, o BFD também ordena os itens em ordem decrescente de tamanho. No entanto, em vez de colocar o item no primeiro bin com espaço suficiente, ele escolhe o bin que deixará o menor espaço livre após a inserção. Esse método é mais eficaz na minimização do desperdício de espaço, resultando em uma solução mais compacta.
+
+Em resumo, os algoritmos **FFD** e **BFD** geralmente produzem soluções melhores que o **FF**, uma vez que organizam os itens de forma decrescente. O **BFD**, por otimizar o espaço restante em cada bin, costuma ser o mais eficiente em termos de aproveitamento do espaço. Esses algoritmos, especialmente o FFD e o BFD, oferecem soluções de alta qualidade para diversas instâncias do problema, com tempos de execução muito rápidos.
