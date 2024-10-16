@@ -24,7 +24,7 @@
 
 ## Projeto:
 ### Sobre o Desafio:
-O problema do Caixeiro Viajante é um desafio clássico de otimização, que busca determinar a rota mais eficiente ou de menor custo que um viajante deve seguir para visitar uma série de cidades e retornar ao ponto de origem, sem passar duas vezes pela mesma cidade. Originado no século 19, o PCV é amplamente estudado tanto como um problema teórico quanto por suas aplicações práticas em áreas como logística, planejamento de rotas e fabricação de circuitos eletrônicos. Este desafio envolve a resolução do Problema do Caixeiro Viajante (PCV) utilizando técnicas de otimização com meta-heurísticas (MH).
+O Problema de Empacotamento Unidimensional (ou bin packing) é um clássico problema de otimização combinatória que se concentra em organizar um conjunto de itens em caixas de forma eficiente. Nesse problema são dados um conjunto de n itens. Cada item i possui um peso ou tamanho wi, indicando que esse item consome wi unidades da capacidade de uma caixa. Também é dado um valor C, indicando a capacidade máxima de uma caixa.Partindo do pressuposto que temos um número ilimitado de caixas disponíveis, o objetivo do Problema de Empacotamento Unidimensional é empacotar todos os itens nas caixas de forma que o número total de caixas utilizadas seja o menor possível.
 
 ### Dados:
 [![Static Badge](https://img.shields.io/badge/Edital%20do%20Desafio%20-%20PDF%20-%20red?style=for-the-badge&logo=files&logoColor=red
