@@ -20,7 +20,7 @@ Durante o desenvolvimento, foram testadas diferentes variações e parâmetros:
 - **Limite de tentativas fracassadas (Scout)**: Testamos limites diferentes para abelhas que não conseguiam melhorar suas soluções, com valores entre 5 e 15 tentativas.
 
 #### **Justificativa para as Escolhas**
-O ABC foi escolhido por sua simplicidade e capacidade de explorar amplamente o espaço de busca, enquanto mantém uma estratégia eficiente de explotação por meio das abelhas observadoras. A estrutura natural do ABC permite um equilíbrio entre a exploração global (abelhas scouts) e a explotação local (abelhas empregadas e observadoras), tornando-o uma escolha adequada para o BPP.
+O ABC foi escolhido por sua simplicidade e capacidade de explorar amplamente o espaço de busca, enquanto mantém uma estratégia eficiente de explotação por meio das abelhas observadoras. A estrutura natural do ABC permite um equilíbrio entre a exploração global (abelhas scouts) e a explotação local (abelhas empregadas e observadoras), tornando-o uma escolha adequada para o BPP. Além disso, o ABC foi no geral o melhor para o artigo ["Metaheuristic Approaches for One-Dimensional Bin Packing Problem: A Comparative Performance Study"](https://ieeexplore.ieee.org/abstract/document/9300141)
 
 #### **Parâmetros**
 Os melhores resultados foram alcançados com os seguintes parâmetros:
