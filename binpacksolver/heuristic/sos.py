@@ -1,4 +1,7 @@
-"""_summary_"""
+"""
+Symbiotic Organisms Search (SOS) algorithm for solving the Bin Packing 
+Problem (BPP) through mutualism, commensalism, and parasitism phases.
+"""
 
 import random
 import time

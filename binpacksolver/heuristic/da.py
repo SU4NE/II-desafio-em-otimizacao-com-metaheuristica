@@ -1,4 +1,7 @@
-"""_summary_"""
+"""
+Dragonfly Algorithm (DA) for solving the Bin Packing Problem (BPP),
+using interactions between dragonflies, food, and enemy positions.
+"""
 
 import time
 from typing import Tuple

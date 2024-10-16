@@ -1,4 +1,7 @@
-"""_summary_"""
+"""
+Memetic algorithm with elitism for solving the Bin Packing Problem (BPP),
+using crossover, mutation, and local search to evolve solutions.
+"""
 
 import random
 import time

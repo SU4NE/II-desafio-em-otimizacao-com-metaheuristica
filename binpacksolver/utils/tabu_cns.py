@@ -1,3 +1,8 @@
+"""
+Implements Tabu Search for solving the Bin Packing Problem using a
+Customized Neighborhood Search (CNS) strategy.
+"""
+
 import math
 import time
 

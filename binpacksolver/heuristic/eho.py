@@ -1,3 +1,8 @@
+"""
+Elephant Herding Optimization (EHO) algorithm for solving the Bin Packing 
+Problem (BPP), utilizing clan updates and isolation to evolve solutions.
+"""
+
 import random
 import time
 from typing import Tuple

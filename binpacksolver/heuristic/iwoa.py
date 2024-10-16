@@ -1,3 +1,8 @@
+"""
+Improved Whale Optimization Algorithm (IWOA) for solving the Bin Packing 
+Problem (BPP), using spiral and linear motion for whale position updates.
+"""
+
 import random
 import time
 from typing import Tuple
@@ -10,7 +15,6 @@ from binpacksolver.utils import (check_end, fitness,
                                  theoretical_minimum)
 
 
-# Update the position of whales (improved with chaos or hybrid operators)
 def update_whale_position(
     whale: np.ndarray,
     leader: np.ndarray,

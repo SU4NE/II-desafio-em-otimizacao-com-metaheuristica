@@ -1,4 +1,7 @@
-"""_summary_"""
+"""
+Particle Swarm Optimization (PSO) for solving the Bin Packing Problem (BPP), 
+optimizing particle positions and velocities to find the best solution.
+"""
 
 import time
 from typing import List, Tuple
