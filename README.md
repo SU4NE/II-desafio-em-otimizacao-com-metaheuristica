@@ -7,6 +7,7 @@
   - [Sobre o Desafio](#sobre-o-desafio)
   - [Dados](#dados)
   - [Hardware e Software Utilizados](#hardware-e-software-utilizados)
+  - [Instalação](#instalação)
   - [Metaheurísticas Testadas](#metaheurísticas-testadas)
   - [Fundamentação Teórica e Implementação](#fundamentação-teórica-e-implementação)
 - [Resultados](#resultados) 
@@ -52,6 +53,49 @@ O Problema de Empacotamento Unidimensional (ou bin packing) é um clássico prob
 - Processador: Ryzen 5600g
 - Memoria Ram: 32Gb
 - Ssd Nvme: 1Tb
+
+## Instalação
+
+Para instalar o pacote `binpacksolver`, você pode usar o `pip`. Siga as instruções abaixo para a instalação:
+
+### 1. Requisitos
+
+Antes de instalar o pacote, verifique se você tem o Python (3.8 ou superior) e o `pip` instalados em seu sistema.
+
+### 2. Instalando via GitHub
+
+Se você quiser instalar a versão mais recente diretamente do repositório GitHub, utilize o comando:
+
+```bash
+pip install git+https://github.com/SU4NE/II-desafio-em-otimizacao-com-metaheuristica.git
+```
+
+### 3. Instalando Dependências
+
+O `binpacksolver` requer algumas bibliotecas, como `numpy` e `tabulate`. Você pode instalar essas dependências separadamente ou certificar-se de que estão listadas no seu arquivo `requirements.txt`.
+
+Aqui está um exemplo de um arquivo `requirements.txt`:
+
+```plaintext
+numpy
+tabulate
+```
+
+Para instalar as dependências diretamente com o pip, execute:
+
+```bash
+pip install numpy tabulate
+```
+
+### 4. Verificando a Instalação
+
+Para verificar se a instalação foi bem-sucedida, você pode tentar importar o pacote em um console Python:
+
+```python
+import binpacksolver
+```
+
+Se não houver erros, a instalação foi concluída com sucesso.
 
 ### Metaheurísticas Testadas:
 
