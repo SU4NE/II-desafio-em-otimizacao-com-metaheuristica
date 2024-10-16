@@ -1,7 +1,4 @@
 # II Desafio em Otimizacao com Metaheuristica PUC GO
-# Sumário
-
-# II Desafio em Otimização com Metaheurística PUC GO
 
 # Sumário
 
@@ -20,6 +17,7 @@
     - [Comparação de RMSE Teórico e Melhor Solução por Arquitetura](#comparação-de-rmse-teórico-e-melhor-solução-por-arquitetura)
     - [Real Time Mean vs Arquivo por Heurística](#real-time-mean-vs-arquivo-por-heurística)
     - [Best Fit Mean vs Arquivo por Heurística](#best-fit-mean-vs-arquivo-por-heurística)
+  - [Explicação](#explicação)
 - [Conclusão](#conclusão)
   - [Sobre o Solver](#sobre-o-solver)
   - [Funcionamento](#funcionamento)
@@ -114,7 +112,7 @@ Essas três heurísticas formam o **Top 3** de soluções mais eficientes, confo
 #### Best Fit Mean vs Arquivo por Heurística
 ![Best Fit Mean](https://github.com/SU4NE/II-desafio-em-otimizacao-com-metaheuristica/blob/main/docs/Graphics/top3/best_fit_vs_arquivo.jpg)
 
-### Explicação:
+## Explicação:
 
 Os resultados das heurísticas testadas foram avaliados com base em diversas métricas, como RMSE (Root Mean Squared Error), MAE (Mean Absolute Error), MSE (Mean Squared Error) e o tempo de execução médio para cada instância de teste. Abaixo estão os gráficos que ilustram a performance das três melhores heurísticas (**Gravitational Search Algorithm (GSA)**, **Improved Whale Optimization Algorithm (IWOA)** e **Particle Swarm Optimization (PSO)**) com links para os arquivos correspondentes no repositório:
 
