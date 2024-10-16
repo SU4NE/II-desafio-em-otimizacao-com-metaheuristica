@@ -151,7 +151,7 @@ def symbiotic_organisms_search(
                 organisms_matrix[i, -1] = current_fitness
 
             parasite = parasitism(organisms_matrix[i, :-1], organisms_matrix[:, :-1], c)
-            repaired_parasite = repair_solution(parasite, parasite, c)
+            repaired_parasite = repair_solution(organisms_matrix[i, :-1], parasite, c)
             parasite_fitness = fitness(repaired_parasite, c)
 
             if parasite_fitness < organisms_matrix[i, -1]:
