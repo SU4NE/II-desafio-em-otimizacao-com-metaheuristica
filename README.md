@@ -7,8 +7,8 @@
   - [Dados](#dados)
   - [Hardware e Software Utilizados](#hardware-e-software-utilizados)
   - [Metaheurísticas Testadas](#metaheurísticas-testadas)
-  - [Resultados](#resultados) 
-  - [Conclusão](#conclusão)
+- [Resultados](#resultados) 
+- [Conclusão](#conclusão)
 
 ## Equipe:
 <div>
@@ -44,7 +44,7 @@ O Problema de Empacotamento Unidimensional (ou bin packing) é um clássico prob
 ### Metaheurísticas Testadas:
 
 Foram implementadas ao todo 19 metaheurísticas:
-- Artificial Bee Colony (ABC)
+- [Artificial Bee Colony (ABC)](https://github.com/SU4NE/II-desafio-em-otimizacao-com-metaheuristica/blob/main/docs/Metaheuristic%20implementations/abc.md)
 - Bat Algorithm
 - Caotic Grey Wolf Optimization (CGWO)
 - Consistent Neighborhood Search (CNS)
@@ -66,6 +66,8 @@ Foram implementadas ao todo 19 metaheurísticas:
 
 ### Fundamentação Teórica e Implementação
 
-Cada metaheurística foi selecionada cuidadosamente com base em sua capacidade de equilibrar exploração e explotação nos diferentes espaços de busca apresentados pelo **Problema de Empacotamento Unidimensional (Bin Packing Problem - BPP)**. Ao longo do desenvolvimento, várias adaptações e ajustes finos foram introduzidos nas metaheurísticas para otimizar seu desempenho em diferentes instâncias do problema. Dada a ampla variedade de algoritmos testados, foi realizada uma análise criteriosa para filtrar as melhores abordagens com base em parâmetros de eficiência e qualidade das soluções. Neste documento, destacaremos as três heurísticas mais eficazes, considerando os resultados obtidos. No entanto, para garantir uma visão completa do trabalho, todas as outras metaheurísticas testadas, junto com suas implementações detalhadas, estarão disponíveis [aqui]().
+Cada metaheurística foi selecionada cuidadosamente com base em sua capacidade de equilibrar exploração e explotação nos diferentes espaços de busca apresentados pelo **Problema de Empacotamento Unidimensional (Bin Packing Problem - BPP)**. Ao longo do desenvolvimento, várias adaptações e ajustes finos foram introduzidos nas metaheurísticas para otimizar seu desempenho em diferentes instâncias do problema. Dada a ampla variedade de algoritmos testados, foi realizada uma análise criteriosa para filtrar as melhores abordagens com base em parâmetros de eficiência e qualidade das soluções. Neste documento, destacaremos as três heurísticas mais eficazes, considerando os resultados obtidos. No entanto, para garantir uma visão completa do trabalho, todas as outras metaheurísticas testadas, junto com suas implementações detalhadas, estarão disponíveis [aqui](https://github.com/SU4NE/II-desafio-em-otimizacao-com-metaheuristica/tree/main/docs/Metaheuristic%20implementations).
 
+# Resultados
 
+# Conclusão
