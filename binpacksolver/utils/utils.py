@@ -5,7 +5,10 @@ to facilitate optimization processes, array manipulations, and
 other generic operations.
 """
 
+from typing import List
+
 import numpy as np
+
 
 # pylint: disable=R0913
 def check_end(
@@ -57,7 +60,9 @@ def check_end(
 
     return best_fit > th_min
 
+
 # pylint: enable=R0913
+
 
 def merge_np(a: np.ndarray, b: np.ndarray) -> np.ndarray:
     """
@@ -104,3 +109,28 @@ def merge_np(a: np.ndarray, b: np.ndarray) -> np.ndarray:
         k += 1
 
     return merged_sorted
+
+
+def has_common_elements(bin_p: np.ndarray, child: List[np.ndarray], trash: np.ndarray):
+    """
+    Checks if there are common elements between a given bin and the child bins.
+
+    Parameters
+    ----------
+    bin_p : np.ndarray
+        An array representing the bin to check against the child bins.
+    child : List[np.ndarray]
+        A list of arrays representing the child bins to be checked.
+    trash : np.ndarray
+        A list to which the bin will be added if there are common elements.
+
+    Returns
+    -------
+    bool
+        Returns True if there are no common elements, False if common elements exist.
+    """
+    for bin_child in child:
+        if np.intersect1d(bin_child, bin_p).any():
+            trash = np.append(trash, bin_p)
+            return False
+    return True

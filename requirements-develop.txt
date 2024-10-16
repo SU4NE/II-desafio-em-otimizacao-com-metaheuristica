@@ -1,0 +1,4 @@
+maturin
+pandas
+tabulate
+openpyxl
