@@ -1,4 +1,4 @@
-# II Desafio em Otimizacao com Metaheuristica PUC GO
+# (Vencedor) II Desafio em Otimizacao com Metaheuristica PUC GO
 
 # Sumário
 
